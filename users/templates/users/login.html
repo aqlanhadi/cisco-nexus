@@ -1,0 +1,22 @@
+{% extends 'users/base.html' %}
+{% load static %}
+{% block content %}
+    <!--begin::Form-->
+    <form class="kt-login-v2__form kt-form" action="" autocomplete="off" method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <input class="form-control" type="text" placeholder="Username" name="username" autpfocus required id="id_username" autocomplete="off">
+        </div>
+
+        <div class="form-group">
+            <input class="form-control" type="password" placeholder="Password" name="password" required id="id_password" autocomplete="off">
+        </div>
+        <!--begin::Action-->
+        <div class="kt-login-v2__actions">
+            <a href="#" class="kt-link kt-link--brand"> Forgot Password ? </a> 
+            <button type="submit" class="btn btn-brand btn-elevate btn-pill">Sign In</button>
+        </div>
+        <!--end::Action-->
+    </form>
+    <!--end::Form-->
+{% endblock content %}
