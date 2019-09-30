@@ -1,16 +1,5 @@
 {% load static %}
 <!DOCTYPE html>
-
-<!--
-Theme: Keen - The Ultimate Bootstrap Admin Theme
-Author: KeenThemes
-Website: http://www.keenthemes.com/
-Contact: support@keenthemes.com
-Follow: www.twitter.com/keenthemes
-Dribbble: www.dribbble.com/keenthemes
-Like: www.facebook.com/keenthemes
-License: You must have a valid license purchased only from https://themes.getbootstrap.com/product/keen-the-ultimate-bootstrap-admin-theme/ in order to legally use the theme for your project.
--->
 <html lang="en">
 
 	<!-- begin::Head -->
@@ -24,28 +13,22 @@ License: You must have a valid license purchased only from https://themes.getboo
 
 		<!--begin::Fonts -->
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700">
-
 		<!--end::Fonts -->
 
 		<!--begin::Page Vendors Styles(used by this page) -->
-		<link href="{% static 'nexus/vendors/custom/fullcalendar/fullcalendar.bundle.css' %}" rel="stylesheet" type="text/css" />
-
+		<link href="{% static 'nexus/plugins/custom/fullcalendar/fullcalendar.bundle.css' %}" rel="stylesheet" type="text/css" />
 		<!--end::Page Vendors Styles -->
 
 		<!--begin::Global Theme Styles(used by all pages) -->
-		<link href="plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
-		<link href="{% static 'nexus/vendors/base/vendors.bundle.css'%}" rel="stylesheet" type="text/css" />
-		
-		<link href="{% static 'nexus/demo/default/base/style.bundle.css' %}" rel="stylesheet" type="text/css" />
-
+		<link href="{% static 'nexus/plugins/global/vendors.bundle.css' %}" rel="stylesheet" type="text/css" />
+		<link href="{% static 'nexus/css/style.bundle.css' %}" rel="stylesheet" type="text/css" />
 		<!--end::Global Theme Styles -->
 
 		<!--begin::Layout Skins(used by all pages) -->
-		<link href="{% static 'nexus/demo/default/skins/header/base/light.css' %}" rel="stylesheet" type="text/css" />
-		<link href="{% static 'nexus/demo/default/skins/header/menu/light.css' %}" rel="stylesheet" type="text/css" />
-		<link href="{% static 'nexus/demo/default/skins/brand/navy.css' %}" rel="stylesheet" type="text/css" />
-		<link href="{% static 'nexus/demo/default/skins/aside/navy.css' %}" rel="stylesheet" type="text/css" />
-
+		<link href="{% static 'nexus/css/skins/header/base/light.css' %}" rel="stylesheet" type="text/css" />
+		<link href="{% static 'nexus/css/skins/header/menu/light.css' %}" rel="stylesheet" type="text/css" />
+		<link href="{% static 'nexus/css/skins/brand/navy.css' %}" rel="stylesheet" type="text/css" />
+		<link href="{% static 'nexus/css/skins/aside/navy.css' %}" rel="stylesheet" type="text/css" />
 		<!--end::Layout Skins -->
 		<link rel="shortcut icon" href="{% static 'nexus/media/logos/favicon.ico' %}" />
 	</head>
@@ -99,10 +82,19 @@ License: You must have a valid license purchased only from https://themes.getboo
 
 		<!--begin::Global Theme Bundle(used by all pages) -->
 		<!--<script src="assets/plugins/global/plugins.bundle.js" type="text/javascript"></script>-->
-		<script src="{% static 'nexus/demo/default/base/scripts.bundle.js' %}" type="text/javascript"></script>
+		<script src="{% static 'nexus/plugins/global/vendors.bundle.js'%}" type="text/javascript"></script>
+		<script src="{% static 'nexus/js/scripts.bundle.js' %}" type="text/javascript"></script>
+
+		<!--begin::Page Vendors(used by this page) -->
+		<script src="{% static 'nexus/plugins/custom/fullcalendar/fullcalendar.bundle.js' %}" type="text/javascript"></script>
+
+		<!--begin::Page Scripts(used by this page) -->
+		<script src="{% static 'nexus/js/pages/lib.js' %}" type="text/javascript"></script>
+		<script src="{% static 'nexus/js/pages/dashboard.js' %}" type="text/javascript"></script>
+
 
         <!--end::Global Theme Bundle -->
-        <script src="{% static 'nexus/app/foundation/layout.js' %}" type="text/javascript"></script>
+        <!-- <script src="{% static 'nexus/app/foundation/layout.js' %}" type="text/javascript"></script>
         <script src="{% static 'nexus/app/foundation/aside-secondary.js' %}" type="text/javascript"></script>
         <script src="{% static 'nexus/app/foundation/menu.js' %}" type="text/javascript"></script>
         <script src="{% static 'nexus/app/foundation/app.js' %}" type="text/javascript"></script>
@@ -115,14 +107,12 @@ License: You must have a valid license purchased only from https://themes.getboo
         <script src="{% static 'nexus/app/bundle/quick-panel.js' %}" type="text/javascript"></script>
         <script src="{% static 'nexus/app/bundle/quick-search.js' %}" type="text/javascript"></script>
 
-		<!--begin::Page Vendors(used by this page) -->
-		<script src="{% static 'nexus/vendors/custom/fullcalendar/fullcalendar.bundle.js' %}" type="text/javascript"></script>
-		<script src="{% static 'nexus/vendors/base/vendors.bundle.js'%}" type="text/javascript"></script>
-		<script src="{% static 'nexus/vendors/custom/jquery-ui/jquery-ui.bundle.js'%}" type="text/javascript"></script>
+		
+		
+		<script src="{% static 'nexus/vendors/custom/jquery-ui/jquery-ui.bundle.js'%}" type="text/javascript"></script> -->
 		<!--end::Page Vendors -->
 
-		<!--begin::Page Scripts(used by this page) -->
-		<script src="{% static 'nexus/app/custom/general/dashboard.js' %}" type="text/javascript"></script>
+		
 
 		<!--end::Page Scripts -->
 	</body>
