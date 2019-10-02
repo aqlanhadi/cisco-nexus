@@ -1,0 +1,86 @@
+{% extends "nexus/layout.html" %}
+{% load static %}
+{% block content %}
+    <!--begin::Portlet-->
+    <div class="kt-portlet kt-profile">
+        <div class="kt-profile__content">
+            <div class="row">
+                <div class="col-md-12 col-lg-5 col-xl-4">
+                    <div class="kt-profile__main">
+                        <div class="kt-profile__main-pic">
+                            <img src="{{ user.profile.image.url }}">
+                            <label class="kt-profile__main-pic-upload" > <i class="flaticon-photo-camera"></i> </label>
+                        </div>
+                        <div class="kt-profile__main-info">
+                            <div class="kt-profile__main-info-name">{{ user.first_name}} {{ user.last_name}}</div>
+                            <div class="kt-profile__main-info-position">Position</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-lg-4 col-xl-4">
+                    <div class="kt-profile__contact">
+                        <a href="#" class="kt-profile__contact-item">
+                            <span class="kt-profile__contact-item-icon kt-profile__contact-item-icon-whatsup"><i class="flaticon-whatsapp"></i></span>
+                            <span class="kt-profile__contact-item-text">Contact no</span> 
+                        </a>
+                        <a href="#" class="kt-profile__contact-item">
+                            <span class="kt-profile__contact-item-icon"><i class="flaticon-email-black-circular-button kt-font-danger"></i></span>
+                            <span class="kt-profile__contact-item-text">{{ user.email }}</span> 
+                        </a>
+                        <a href="#" class="kt-profile__contact-item">
+                            <span class="kt-profile__contact-item-icon kt-profile__contact-item-icon-twitter"><i class="flaticon-twitter-logo-button"></i></span>
+                            <span class="kt-profile__contact-item-text">twitter username</span> 
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-12 col-lg-3 col-xl-4">
+                    <div class="kt-profile__stats">
+                        <div class="kt-profile__stats-item">
+                            <div class="kt-profile__stats-item-label">Sales</div>
+                            <div class="kt-profile__stats-item-chart">
+                                <span>USP: +23%</span> 
+                                <canvas id="kt_profile_mini_chart_1" width="100" height="40"></canvas>
+                            </div>
+                        </div>
+                        <div class="kt-profile__stats-item">
+                            <div class="kt-profile__stats-item-label">Reports</div>
+                            <div class="kt-profile__stats-item-chart">
+                                <span>RNP: +30%</span> 
+                                <canvas id="kt_profile_mini_chart_2" width="100" height="40"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="kt-profile__nav">
+            <ul class="nav nav-tabs nav-tabs-line" role="tablist">
+                {% comment %} <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#kt_tabs_1_1" role="tab">Dashboard</a> </li> {% endcomment %}
+                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#kt_tabs_1_2" role="tab">Account & Profile</a> </li>
+                {% comment %} <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#kt_tabs_1_3" role="tab">Activities</a> </li> {% endcomment %}
+                {% comment %} <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#kt_tabs_1_4" role="tab">Tasks</a> </li> {% endcomment %}
+            </ul>
+        </div>
+    </div>
+    <!--end::Portlet-->
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="kt_tabs_1_1" role="tabpanel">
+            {% comment %} {% include 'users/partials/dashboard.html' %} {% endcomment %}
+        </div>
+        <div class="tab-pane fade" id="kt_tabs_1_2" role="tabpanel">
+            <!--begin::Row-->
+            {% include 'users/partials/update-profile.html' %}
+            <!--end::Row-->
+        </div>
+        <div class="tab-pane fade" id="kt_tabs_1_3" role="tabpanel">
+            <!--begin::Row-->
+            {% comment %} {% include 'users/partials/activities.html' %} {% endcomment %}
+            <!--end::Row-->
+        </div>
+        <div class="tab-pane fade" id="kt_tabs_1_4" role="tabpanel">
+            <!--begin::Row-->
+            {% comment %} {% include 'users/partials/tasks.html' %} {% endcomment %}
+            <!--end::Row-->
+        </div>
+    </div>
+{% endblock content %}

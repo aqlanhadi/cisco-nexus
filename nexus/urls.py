@@ -14,9 +14,30 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.urls import include, path
 
+# Serve media during dev
+from django.conf import settings
+from django.conf.urls.static import static
+from django.shortcuts import redirect
+
+from users import views as user_views
+from dashboard import views as dash_views
+
 urlpatterns = [
+    #path('dashboard/', "/dashboard/templates/default/dist/default/index.html", name='dahsboard' ),
+    #path('', redirect('login'), name='home'),
+    path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
+    path('dashboard/', dash_views.dashboard, name='dashboard'),
+    path('profile/', user_views.profile, name='profile'),
+
+    path('payroll/', include('payroll.urls')),
+    path('attendance/', include('attendance.urls')),
+    # path('announcements/', include('announcements.urls')),
     path('admin/', admin.site.urls),
-    path('accounts/', include('django.contrib.auth.urls'))
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
