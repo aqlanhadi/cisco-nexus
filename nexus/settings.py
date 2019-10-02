@@ -34,9 +34,14 @@ TIME_ZONE = 'GMT+8'
 INSTALLED_APPS = [
     'django_sass',
     'crispy_forms',
+
     'dashboard.apps.DashboardConfig',
+    'attendance.apps.AttendanceConfig',
+    'payroll.apps.PayrollConfig',
+    'docexports.apps.DocexportsConfig',
     'users.apps.UsersConfig',
     'announcements.apps.AnnouncementsConfig',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

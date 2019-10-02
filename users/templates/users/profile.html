@@ -55,17 +55,17 @@
         </div>
         <div class="kt-profile__nav">
             <ul class="nav nav-tabs nav-tabs-line" role="tablist">
-                <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#kt_tabs_1_1" role="tab">Dashboard</a> </li>
+                {% comment %} <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#kt_tabs_1_1" role="tab">Dashboard</a> </li> {% endcomment %}
                 <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#kt_tabs_1_2" role="tab">Account & Profile</a> </li>
-                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#kt_tabs_1_3" role="tab">Activities</a> </li>
-                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#kt_tabs_1_4" role="tab">Tasks</a> </li>
+                {% comment %} <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#kt_tabs_1_3" role="tab">Activities</a> </li> {% endcomment %}
+                {% comment %} <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#kt_tabs_1_4" role="tab">Tasks</a> </li> {% endcomment %}
             </ul>
         </div>
     </div>
     <!--end::Portlet-->
     <div class="tab-content">
         <div class="tab-pane fade show active" id="kt_tabs_1_1" role="tabpanel">
-            {% include 'users/partials/dashboard.html' %}
+            {% comment %} {% include 'users/partials/dashboard.html' %} {% endcomment %}
         </div>
         <div class="tab-pane fade" id="kt_tabs_1_2" role="tabpanel">
             <!--begin::Row-->
@@ -74,12 +74,12 @@
         </div>
         <div class="tab-pane fade" id="kt_tabs_1_3" role="tabpanel">
             <!--begin::Row-->
-            {% include 'users/partials/activities.html' %}
+            {% comment %} {% include 'users/partials/activities.html' %} {% endcomment %}
             <!--end::Row-->
         </div>
         <div class="tab-pane fade" id="kt_tabs_1_4" role="tabpanel">
             <!--begin::Row-->
-            {% include 'users/partials/tasks.html' %}
+            {% comment %} {% include 'users/partials/tasks.html' %} {% endcomment %}
             <!--end::Row-->
         </div>
     </div>

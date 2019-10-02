@@ -14,13 +14,13 @@ def create_profile(sender, instance, created, **kwargs):
 def save_profile(sender, instance, **kwargs):
     instance.profile.save()
 
-# make address for created profile
-@receiver(post_save, sender=Profile)
-def create_address(sender, instance, created, **kwargs):
-    if created:
-        Address.object.create(profile=instance)
+# # make address for created profile
+# @receiver(post_save, sender=Profile)
+# def create_address(sender, instance, created, **kwargs):
+#     if created:
+#         Address.object.create(profile=instance)
 
-# save profile
-@receiver(post_save, sender=Profile)
-def save_address(sender, instance, **kwargs):
-    instance.address.save()
+# # save profile
+# @receiver(post_save, sender=Profile)
+# def save_address(sender, instance, **kwargs):
+#     instance.address.save()
