@@ -9,4 +9,6 @@ def starter(request):
 @login_required
 def dashboard(request):
     #return HttpResponse("hi")
+    print(request.user)
     return render(request, 'dashboard/dashboard.html', {'title':'Dashboard'})
+
