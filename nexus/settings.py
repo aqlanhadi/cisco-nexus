@@ -35,6 +35,10 @@ INSTALLED_APPS = [
     'dashboard',
     'attendance_module',
     'payroll_module',
+
+    'bootstrap4',
+    'bootstrap_datepicker_plus',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -131,3 +135,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static/'),
 )
+
+BOOTSTRAP4 = {
+    'include_jquery': True,
+}

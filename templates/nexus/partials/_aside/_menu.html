@@ -1,4 +1,5 @@
-
+{% url 'dashboard' as dashboard %}
+{% url 'salary-dashboard' as salary_dashboard %}
 <!-- begin:: Aside Menu -->
 <div class="kt-aside-menu-wrapper kt-grid__item kt-grid__item--fluid" id="kt_aside_menu_wrapper">
 	<div id="kt_aside_menu" class="kt-aside-menu " data-ktmenu-vertical="1" data-ktmenu-scroll="1" data-ktmenu-dropdown-timeout="500">
@@ -7,7 +8,7 @@
 				<div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
 					<ul class="kt-menu__subnav">
 						<li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text">Dashboard</span></span></li>
-						<li class="kt-menu__item  kt-menu__item--active" aria-haspopup="true"><a href="#" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Manager</span></a></li>
+						<li class="kt-menu__item  {% if request.get_full_path == dashboard %} kt-menu__item--active {% endif %}" aria-haspopup="true"><a href="#" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Manager</span></a></li>
 						<li class="kt-menu__item " aria-haspopup="true"><a href="#" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Employee</span></a></li>
 					</ul>
 				</div>
@@ -20,7 +21,7 @@
 				<div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
 					<ul class="kt-menu__subnav">
 						<li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text">Base</span></span></li>
-						<li class="kt-menu__item " aria-haspopup="true"><a href="{% url 'salary-dashboard' %}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Salary Dashboard</span></a></li>
+						<li class="kt-menu__item {% if request.get_full_path == salary_dashboard %} kt-menu__item--active {% endif %}" aria-haspopup="true"><a href="{% url 'salary-dashboard' %}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Salary Dashboard</span></a></li>
 						<li class="kt-menu__item " aria-haspopup="true"><a href="{% url 'salary-history' %}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Salary History</span></a></li>
 						<li class="kt-menu__item " aria-haspopup="true"><a href="{% url 'salary-breakdown' %}" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Salary Breakdowns</span></a></li>
 					</ul>

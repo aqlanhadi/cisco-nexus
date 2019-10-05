@@ -1,4 +1,7 @@
 {% load static %}
+{% load bootstrap4 %}       {# import bootstrap4/bootstrap3 #}
+{% bootstrap_css %}         {# Embed Bootstrap CSS #}
+{% bootstrap_javascript jquery='full' %}  {# Embed Bootstrap JS+jQuery #}
 <!DOCTYPE html>
 
 <!--
@@ -119,7 +122,7 @@ License: You must have a valid license purchased only from https://themes.getboo
 		<!--begin::Page Scripts(used by this page) -->
 		<script src="{% static 'nexus/js/pages/dashboard.js' %}" type="text/javascript"></script> {% endcomment %}
 		<script src="{% static 'nexus/app/custom/general/components/keen-wizard/wizard-demo-v2.js'%}" type="text/javascript"></script>
-		<script src="{% static 'nexus/app/custom/general/components/forms/widgets/bootstrap-daterangepicker.js'%}" type="text/javascript"></script>
+		<script src="{% static 'nexus/app/custom/general/components/forms/widgets/bootstrap-daterangepicker.js' %}" type="text/javascript"></script>
 		<!--end::Page Scripts -->
 	</body>
 

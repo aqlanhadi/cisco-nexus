@@ -1,10 +1,11 @@
 from django.shortcuts import render
-
+from .forms import LeaveDateTime
 # Create your views here.
 
 #employee
 def leave_request(request):
-    return render(request, 'attendance_module/leave-request.html')
+    form = LeaveDateTime()
+    return render(request, 'attendance_module/leave-request.html', {'form': form})
 
 #manager perm
 def leave_review(request):
