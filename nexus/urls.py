@@ -15,8 +15,22 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.conf import settings
+from django.conf.urls.static import static
+
+from django.contrib.auth import views as auth_views
+from dashboard import views as dash_views
 
 urlpatterns = [
+    path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
+    
+    path('attendance/', include('attendance_module.urls')),
+    path('salary/', include('payroll_module.urls')),
+
+    path('dashboard/', dash_views.dashboard, name="dashboard"),  
     path('admin/', admin.site.urls),
-    path('accounts/', include('django.contrib.auth.urls'))
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

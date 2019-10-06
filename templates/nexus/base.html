@@ -1,0 +1,130 @@
+{% load static %}
+{% load bootstrap4 %}       {# import bootstrap4/bootstrap3 #}
+{% bootstrap_css %}         {# Embed Bootstrap CSS #}
+{% bootstrap_javascript jquery='full' %}  {# Embed Bootstrap JS+jQuery #}
+<!DOCTYPE html>
+
+<!--
+Theme: Keen - The Ultimate Bootstrap Admin Theme
+Author: KeenThemes
+Website: http://www.keenthemes.com/
+Contact: support@keenthemes.com
+Follow: www.twitter.com/keenthemes
+Dribbble: www.dribbble.com/keenthemes
+Like: www.facebook.com/keenthemes
+License: You must have a valid license purchased only from https://themes.getbootstrap.com/product/keen-the-ultimate-bootstrap-admin-theme/ in order to legally use the theme for your project.
+-->
+<html lang="en">
+
+	<!-- begin::Head -->
+	<head>
+		<base href="">
+		<meta charset="utf-8" />
+		<title>Keen | Dashboard</title>
+		<meta name="description" content="Latest updates and statistic charts">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+		<!--begin::Fonts -->
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700">
+
+		<!--end::Fonts -->
+
+		<!--begin::Page Vendors Styles(used by this page) -->
+		{% comment %} <link href="{% static 'nexus/plugins/custom/fullcalendar/fullcalendar.bundle.css' %}" rel="stylesheet" type="text/css" /> {% endcomment %}
+
+		<!--end::Page Vendors Styles -->
+
+		<!-- Bootstrap -->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<!--begin::Global Theme Styles(used by all pages) -->
+	    <link href="{% static 'nexus/vendors/base/vendors.bundle.css' %}" rel="stylesheet" type="text/css" />
+		<link href="{% static 'nexus/demo/default/base/style.bundle.css' %}" rel="stylesheet" type="text/css" />
+
+		<!--end::Global Theme Styles -->
+
+		<!--begin::Layout Skins(used by all pages) -->
+		<link href="{% static 'nexus/demo/default/skins/header/base/light.css' %}" rel="stylesheet" type="text/css" />
+		<link href="{% static 'nexus/demo/default/skins/header/menu/light.css' %}" rel="stylesheet" type="text/css" />
+		<link href="{% static 'nexus/demo/default/skins/brand/navy.css' %}" rel="stylesheet" type="text/css" />
+		<link href="{% static 'nexus/demo/default/skins/aside/navy.css' %}" rel="stylesheet" type="text/css" />
+
+		<!--end::Layout Skins -->
+		<link rel="shortcut icon" href="assets/media/logos/favicon.ico" />
+	</head>
+
+	<!-- end::Head -->
+
+	<!-- begin::Body -->
+	<body class="kt-page--loading-enabled kt-page--loading kt-quick-panel--right kt-demo-panel--right kt-offcanvas-panel--right kt-header--fixed kt-header-mobile--fixed kt-subheader--enabled kt-subheader--transparent kt-aside--enabled kt-aside--fixed kt-page--loading">
+
+		{% include 'nexus/partials/_page-loader.html' %}
+
+        {% block layout %}
+        {% endblock layout %}
+
+		<!-- begin::Global Config(global config for global JS sciprts) -->
+		<script>
+			var KTAppOptions = {
+				"colors": {
+					"state": {
+						"brand": "#5d78ff",
+						"metal": "#c4c5d6",
+						"light": "#ffffff",
+						"accent": "#00c5dc",
+						"primary": "#5867dd",
+						"success": "#34bfa3",
+						"info": "#36a3f7",
+						"warning": "#ffb822",
+						"danger": "#fd3995",
+						"focus": "#9816f4"
+					},
+					"base": {
+						"label": [
+							"#c5cbe3",
+							"#a1a8c3",
+							"#3d4465",
+							"#3e4466"
+						],
+						"shape": [
+							"#f0f3ff",
+							"#d9dffa",
+							"#afb4d4",
+							"#646c9a"
+						]
+					}
+				}
+			};
+		</script>
+
+		<!-- end::Global Config -->
+		{% comment %} <script
+		src="https://code.jquery.com/jquery-3.4.1.js"
+		integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+		crossorigin="anonymous"></script>		 {% endcomment %}
+		
+		<!--begin::Global Theme Bundle(used by all pages) -->
+		<script src="{% static 'nexus/vendors/base/vendors.bundle.js'%}" type="text/javascript"></script>
+		<script src="{% static 'nexus/demo/default/base/scripts.bundle.js' %}" type="text/javascript"></script>
+
+		<!--end::Global Theme Bundle -->
+
+		<!-- Bootstrap Required JS-->
+		{% comment %} <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+		<!--begin::Page Vendors(used by this page) -->
+		<!--<script src="{% static 'nexus/vendors/custom/fullcalendar/fullcalendar.bundle.js' %}" type="text/javascript"></script>-->
+
+		<!--end::Page Vendors -->
+
+		<!--begin::Page Scripts(used by this page) -->
+		<script src="{% static 'nexus/js/pages/dashboard.js' %}" type="text/javascript"></script> {% endcomment %}
+		<script src="{% static 'nexus/app/custom/general/components/keen-wizard/wizard-demo-v2.js'%}" type="text/javascript"></script>
+		<script src="{% static 'nexus/app/custom/general/components/forms/widgets/bootstrap-daterangepicker.js' %}" type="text/javascript"></script>
+		<!--end::Page Scripts -->
+	</body>
+
+	<!-- end::Body -->
+</html>
