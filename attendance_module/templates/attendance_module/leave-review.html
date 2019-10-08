@@ -1,4 +1,90 @@
 {% extends 'nexus/layout.html' %}
 {% block content %}
 <p>leave-review</p>
+
+<div class="kt-content kt-grid__item kt-grid__item--fluid" id="kt_content">
+        <div class="row">
+            <div class="col-lg-5">
+                <!--begin::Portlet-->
+                <div class="kt-portlet">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                                Requests
+                            </h3>
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body">
+                        <div class="kt-portlet__content">
+                                <div class="kt-section">
+                                        <div class="kt-section__content">
+                                            <table class="table">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Name</th>
+                                                        <th>Requested for</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                    <th scope="row">1</th>
+                                                    <td><a href="../../components/icons/fontawesome5.html" class="kt-menu__link ">Jhon</a></td>
+                                                    <td>2 Sept</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">2</th>
+                                                        <td><a href="../../components/icons/fontawesome5.html" class="kt-menu__link ">Lisa</a></td>
+                                                        <td>3 Oct</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">3</th>
+                                                        <td><a href="../../components/icons/fontawesome5.html" class="kt-menu__link ">Lim</a></td>
+                                                        <td>17 Nov</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                        </div>
+                    </div>
+                </div>
+                <!--end::Portlet-->
+                
+            </div>
+            <div class="col-lg-7">
+                <!--begin::Portlet-->
+                <div class="kt-portlet">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                                Leave request
+                            </h3>
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body">
+                        <div class="kt-portlet__content">
+                            Name, date
+                        </div>
+                        <div class="kt-portlet__content">
+                            Reason: 
+                        </div>
+                        <div class="kt-portlet__content">
+                                On that day
+                                    active guards
+                                No pending security issues
+                            </div>
+                    </div>
+                    <div class="kt-portlet__foot kt-portlet__foot--md">
+                            <div class="kt-widget-17__foot">
+                                <div class="kt-widget-17__foot-info"></div>
+                                <div class="kt-widget-17__foot-toolbar"> <a href="#" class="btn btn-default btn-sm btn-bold btn-upper">Approve</a> <a href="#" class="btn btn-brand btn-sm btn-upper btn-bold">Reject</a> </div>
+                            </div>
+                        </div>
+                </div>
+                <!--end::Portlet-->
+            </div>
+        </div>
+    </div>
+
 {% endblock content %}
