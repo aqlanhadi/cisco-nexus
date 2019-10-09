@@ -1,4 +1,5 @@
-<div class="kt-user-card kt-margin-b-40 kt-margin-b-30-tablet-and-mobile" style="background-image: url(assets/media/misc/head_bg_sm.jpg)">
+{% load static %}
+<div class="kt-user-card kt-margin-b-40 kt-margin-b-30-tablet-and-mobile" style="background-image: {% static  'assets/media/misc/head_bg_sm.jpg' %}">
 	<div class="kt-user-card__wrapper">
 		<div class="kt-user-card__pic">
 
@@ -18,7 +19,6 @@
 			<span class="kt-nav__link-text">My Profile</span>
 		</a>
 	</li>
-	<!--
 	<li class="kt-nav__item">
 		<a href="custom/profile/overview-1.html" class="kt-nav__link">
 			<span class="kt-nav__link-icon"><i class="flaticon2-browser-2"></i></span>
@@ -37,7 +37,7 @@
 			<span class="kt-nav__link-text">Settings</span>
 		</a>
 	</li>
-	-->
+	
 	<li class="kt-nav__separator kt-nav__separator--fit"></li>
 	<li class="kt-nav__custom kt-space-between">
 		<a href="{% url 'logout' %}" class="btn btn-label-brand btn-upper btn-sm btn-bold">Sign Out</a>
