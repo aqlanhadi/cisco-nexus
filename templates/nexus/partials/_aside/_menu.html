@@ -1,5 +1,6 @@
 {% url 'dashboard' as dashboard %}
 {% url 'salary-dashboard' as salary_dashboard %}
+{% load users_tags %}
 <!-- begin:: Aside Menu -->
 <div class="kt-aside-menu-wrapper kt-grid__item kt-grid__item--fluid" id="kt_aside_menu_wrapper">
 	<div id="kt_aside_menu" class="kt-aside-menu " data-ktmenu-vertical="1" data-ktmenu-scroll="1" data-ktmenu-dropdown-timeout="500">
@@ -8,13 +9,18 @@
 				<div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
 					<ul class="kt-menu__subnav">
 						<li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true"><span class="kt-menu__link"><span class="kt-menu__link-text">Dashboard</span></span></li>
-						<li class="kt-menu__item  {% if request.get_full_path == dashboard %} kt-menu__item--active {% endif %}" aria-haspopup="true"><a href="#" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Manager</span></a></li>
-						<li class="kt-menu__item " aria-haspopup="true"><a href="#" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Employee</span></a></li>
+						{% if user|is_manager %}
+							<li class="kt-menu__item  {% if request.get_full_path == dashboard %} kt-menu__item--active {% endif %}" aria-haspopup="true"><a href="#" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Manager</span></a></li>
+						{% endif %}
+						{% if user|is_guard %}
+							<li class="kt-menu__item " aria-haspopup="true"><a href="#" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text">Guard</span></a></li>
+						{% endif %}
 					</ul>
 				</div>
 			</li>
+			{% if user|is_guard %}
 			<li class="kt-menu__section ">
-				<h4 class="kt-menu__section-text">Employee Panel</h4>
+				<h4 class="kt-menu__section-text">Guards Panel</h4>
 				<i class="kt-menu__section-icon flaticon-more-v2"></i>
 			</li>
 			<li class="kt-menu__item  kt-menu__item--submenu" aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle"><i class="kt-menu__link-icon flaticon2-layers-1"></i><span class="kt-menu__link-text">Payroll Module</span><i class="kt-menu__ver-arrow la la-angle-right"></i></a>
@@ -27,6 +33,7 @@
 					</ul>
 				</div>
 			</li>
+			
 			<li class="kt-menu__item  kt-menu__item--submenu" aria-haspopup="true" data-ktmenu-submenu-toggle="hover"><a href="javascript:;" class="kt-menu__link kt-menu__toggle"><i class="kt-menu__link-icon flaticon2-layers-1"></i><span class="kt-menu__link-text">Attendance Module</span><i class="kt-menu__ver-arrow la la-angle-right"></i></a>
 				<div class="kt-menu__submenu "><span class="kt-menu__arrow"></span>
 					<ul class="kt-menu__subnav">
@@ -35,7 +42,9 @@
 					</ul>
 				</div>
 			</li>
+			{% endif %}
 
+			{% if user|is_manager %}
 			<li class="kt-menu__section ">
 				<h4 class="kt-menu__section-text">Manager Panel</h4>
 				<i class="kt-menu__section-icon flaticon-more-v2"></i>
@@ -65,6 +74,8 @@
 					</ul>
 				</div>
 			</li>
+			{% endif %}
+
 		</ul>
 	</div>
 </div>
