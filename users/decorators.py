@@ -38,6 +38,15 @@ def is_guard(function):
             return HttpResponseForbidden()
     return wrap
 
+def is_manager(function):
+    @wraps(function)
+    def wrap(request, *args, **kwargs):
+        if request.user.groups.filter(name='Managers').exists():
+            return function(request, *args, **kwargs)
+        else:
+            return HttpResponseForbidden()
+    return wrap
+
 # def is_authorized(function):
 #   @wraps(function)
 #   def wrap(request, *args, **kwargs):

@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.core.files.storage import FileSystemStorage
 from .forms import LeaveDateTime, UploadFileForm
-from users.decorators import group_required, is_guard
+from users.decorators import group_required, is_guard, is_manager
 # Create your views here.
 
 #employee
@@ -24,10 +24,10 @@ def leave_list(request):
     return
 
 #manager perm
-@group_required('manager')
+@is_manager
 def leave_review(request):
     return render(request, 'attendance_module/leave-review.html')
 #manager perm
-@group_required('manager')
+@is_manager
 def register_attendance(request):
     return render(request, 'attendance_module/register-attendance.html')
