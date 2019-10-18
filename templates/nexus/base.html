@@ -1,5 +1,6 @@
 {% load static %}
 {% load bootstrap4 %}       {# import bootstrap4/bootstrap3 #}
+{% load fullcalendar_tags %}
 {% bootstrap_css %}         {# Embed Bootstrap CSS #}
 {% bootstrap_javascript jquery='full' %}  {# Embed Bootstrap JS+jQuery #}
 <!DOCTYPE html>
@@ -31,8 +32,12 @@ License: You must have a valid license purchased only from https://themes.getboo
 		<!--end::Fonts -->
 
 		<!--begin::Page Vendors Styles(used by this page) -->
-		{% comment %} <link href="{% static 'nexus/plugins/custom/fullcalendar/fullcalendar.bundle.css' %}" rel="stylesheet" type="text/css" /> {% endcomment %}
-
+		<link href="{% static 'nexus/vendors/custom/fullcalendar/fullcalendar.bundle.css' %}" rel="stylesheet" type="text/css" />
+		<link href="{% static 'nexus/app/custom/calendar/custom-calendar.css' %}" rel="stylesheet" type="text/css" />
+		{% fullcalendar_print_css %}
+		<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
+		{% comment %} {% calendar_init event_url %} {% endcomment %}
 		<!--end::Page Vendors Styles -->
 
 		<!-- Bootstrap -->
@@ -123,6 +128,9 @@ License: You must have a valid license purchased only from https://themes.getboo
 		<script src="{% static 'nexus/js/pages/dashboard.js' %}" type="text/javascript"></script> {% endcomment %}
 		<script src="{% static 'nexus/app/custom/general/components/keen-wizard/wizard-demo-v2.js'%}" type="text/javascript"></script>
 		<script src="{% static 'nexus/app/custom/general/components/forms/widgets/bootstrap-daterangepicker.js' %}" type="text/javascript"></script>
+		<script src="{% static 'nexus/vendors/custom/fullcalendar/fullcalendar.bundle.js'%}" type="text/javascript"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/interaction/main.js" type="text/javascript"></script>
+		<script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
 		<!--end::Page Scripts -->
 	</body>
 

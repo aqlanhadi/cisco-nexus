@@ -1,0 +1,6 @@
+{% extends 'nexus/layout.html' %}
+{% block content %}
+    <p>{{ user.id }}</p>
+    <p>Assigned Manager: {{ user.guard.manager }}</p>
+    <p>Assigned Location: {{ user.guard.location }}</p>
+{% endblock content %}
