@@ -65,7 +65,7 @@
                                 //alert('Clicked on: ' + date.format());
                                 // change the day's background color just for fun
                                 
-                                $(this).toggleClass("day-highlight");
+                                
                                 //$('#salary-summary span').text('today is ' + date.format());
                                 date_clicked = date.format();
                                 $.ajax({
@@ -75,9 +75,10 @@
                                     success : function(response){
                                     //reset the form after successful submit
                                         console.log('success')
-                                        console.log(this.response)
+                                        console.log(response.css)
                                         $('#date-summary').text(response.data)
                                         $('#date-hours_worked').text(response.hours_worked)
+                                        $(this).css(response.css);
                                     },
                                     error : function(response){
                                         console.log(response)

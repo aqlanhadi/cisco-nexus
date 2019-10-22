@@ -35,7 +35,15 @@ def leave_review(request):
 
 @is_manager
 def register_attendance(request):
+    # once loaded -> gather all employee objects (the one u manage)
+    #display first entry:
+    #   populate calendar with colors? -> access each day entry css
+    #   lock other months
+    # iterate++ when next
     user = request.user
+
+    guard_set = user.manager_set.all()
+
     if request.is_ajax():
         date_clicked = request.POST['date_clicked']
         entry_today = user.entry_set.get(date=date_clicked)
@@ -44,7 +52,8 @@ def register_attendance(request):
             hours_worked = entry_today.hours_worked
         else:
             text = "no record found"
-        return JsonResponse({'data': text, 'hours_worked':hours_worked})
+        css = "day-highlight"
+        return JsonResponse({'data': text, 'hours_worked':hours_worked, 'css':css})
 
     json_entry = "{ selectable:true }"
     json_data = json.dumps(json_entry)
