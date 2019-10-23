@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.core.files.storage import FileSystemStorage
 
+from users.models import Guard
 from .forms import LeaveDateTime, UploadFileForm
 from users.decorators import group_required, is_guard, is_manager
 
@@ -41,8 +42,8 @@ def register_attendance(request):
     #   lock other months
     # iterate++ when next
     user = request.user
-
-    guard_set = user.manager_set.all()
+    # Gather all the guards that the user is managing
+    guards = Guard.objects.filter(location__manager__username=user)
 
     if request.is_ajax():
         date_clicked = request.POST['date_clicked']
@@ -57,7 +58,7 @@ def register_attendance(request):
 
     json_entry = "{ selectable:true }"
     json_data = json.dumps(json_entry)
-    return render(request, 'attendance_module/register-attendance.html', {'user': user,'fc_json': json_entry })
+    return render(request, 'attendance_module/register-attendance.html', {'user': user, 'guards':guards.iterator() ,'fc_json': json_entry })
 
 
 #################CALENDAR VIEW################
