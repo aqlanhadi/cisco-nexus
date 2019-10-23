@@ -32,7 +32,16 @@ def group_required(group, login_url=None, raise_exception=False):
 def is_guard(function):
     @wraps(function)
     def wrap(request, *args, **kwargs):
-        if request.user.groups.filter(name='Guards').exists():
+        if request.user.groups.filter(name='Guards').exists() or request.user.is_superuser == True:
+            return function(request, *args, **kwargs)
+        else:
+            return HttpResponseForbidden()
+    return wrap
+
+def is_manager(function):
+    @wraps(function)
+    def wrap(request, *args, **kwargs):
+        if request.user.groups.filter(name='Managers').exists() or request.user.is_superuser == True:
             return function(request, *args, **kwargs)
         else:
             return HttpResponseForbidden()

@@ -1,10 +1,11 @@
 
 <!--begin: User Bar -->
+
 <div class="kt-header__topbar-item kt-header__topbar-item--user">
 	<div class="kt-header__topbar-wrapper" data-toggle="dropdown" data-offset="0px,0px">
 
 		<!--use "kt-rounded" class for rounded avatar style-->
-		<div class="kt-header__topbar-user kt-rounded-">
+		<div class="kt-header__topbar-user kt-rounded-" onclick="showClass();">
 			<span class="kt-header__topbar-welcome kt-hidden-mobile">Hi,</span>
 			<span class="kt-header__topbar-username kt-hidden-mobile">{{ user.username }}</span>
 			<img alt="profile-picture" src="{{ user.profile.image.url }}" class="kt-rounded-" />
@@ -13,10 +14,25 @@
 			<span class="kt-badge kt-badge--username kt-badge--lg kt-badge--brand kt-hidden kt-badge--bold">S</span>
 		</div>
 	</div>
-	<div class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-sm">
+	<div id="classshow" class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-sm">
 
 		{% include 'nexus/partials/_topbar/dropdown/user-solid.html' %}
 	</div>
 </div>
+
+<script>
+{% comment %} 
+	var num = 1;
+	function showClass(){
+		num++;
+		if(num%2 == 0){
+			document.getElementById("classshow").style.display= "block";
+		}
+		else {
+			document.getElementById("classshow").style.display= "none";
+		}
+		
+	} {% endcomment %}
+</script>
 
 <!--end: User Bar -->

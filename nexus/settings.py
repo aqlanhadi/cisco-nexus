@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'attendance_module',
     'payroll_module',
 
+    'fullcalendar',
     'bootstrap4',
     'bootstrap_datepicker_plus',
 
@@ -46,6 +47,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+FULLCALENDAR = {
+    'css_url': 'nexus/vendors/custom/fullcalendar/fullcalendar.bundle.css',
+    'javascript_url': 'nexus/vendors/custom/fullcalendar/fullcalendar.bundle.js',
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
