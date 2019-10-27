@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'fullcalendar',
     'bootstrap4',
     'bootstrap_datepicker_plus',
+    'rest_framework',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -47,6 +48,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+REST_FRAMEWORK = {
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',  # Use application/json instead of multipart/form-data requests in tests.
+}
 
 FULLCALENDAR = {
     'css_url': 'nexus/vendors/custom/fullcalendar/fullcalendar.bundle.css',

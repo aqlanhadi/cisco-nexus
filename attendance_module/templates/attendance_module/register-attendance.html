@@ -45,22 +45,34 @@
             </div>
             <div class='kt-portlet__body'>
                 <div class='kt_datatable kt-datatable kt-datatable--default kt-datatable--brand kt-datatable--loaded' id='local_data'>
-                    <table class='kt-datatable__table' style='display:block;'>
+                    <table class='kt-datatable__table' style='display:block;' id='guard-table'>
                         <thead class='kt-datatable__head'>
                             <tr class='kt-datatable__row' style='left: 0px;'>
-                                <th data-field='id' class='kt-datatable__cell kt-datatable__cell--sort'><span style='width:120px;'>Employee ID</span></th>
-                                <th data-field='name' class='kt-datatable__cell kt-datatable__cell--sort'><span style='width:182px;'>Name</span></th>
+                                <th data-field='id' class='kt-datatable__cell kt-datatable__cell--sort'><span style='width:50px;'>ID</span></th>
+                                <th data-field='name' class='kt-datatable__cell kt-datatable__cell--sort'><span style=''>Name</span></th>
                             </tr>
                         </thead>
                         <tbody class='kt-datatable__body'>
-                            {% for guard in guards %}
+                            {% comment %} {% for guard in guards %}
                             <tr class='kt-datatable__row' style='left:0px;'>
-                                <td data-field='id' class='kt-datatable__cell' style='padding-left:55px;width:150px;'><span>{{ guard.user.id }}</span></td>
-                                <td data-field='name' class='kt-datatable__cell' tyle='width:182px;'><span>{{ guard.user.username }}</span></td>
+                                <td data-field='id' class='kt-datatable__cell' style='padding-left:25px;width:50px;'><span>{{ guard.user.id }}</span></td>
+                                <td data-field='name' class='kt-datatable__cell' style='text-align:center;'><span>{{ guard.user.username }}</span></td>
                             </tr>
-                            {% endfor %}
+                            {% endfor %} {% endcomment %}
                         </tbody>
                     </table>
+                    <script>
+                        var datatable = $('#kt_datatable').KTDatatable({
+                            'ajax': {
+                                'url': '{% url 'attd-register-attd' %}',
+                                'type': 'POST'
+                            },
+                            'columns': [
+                                { 'data': 'id'},
+                                { 'data': 'username'}
+                            ]
+                        });
+                    </script>
                 </div>
             </div>
             <div class='kt-portlet__foot'>
@@ -134,6 +146,7 @@
                             $('#date-hours_worked').text('')
                         }
                     })
+
                 });
                 </script>
                 <div id='calendar'></div>
