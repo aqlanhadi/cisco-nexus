@@ -4,6 +4,8 @@ from users import models as user_models
 from attendance_module.forms import LeaveDateTime
 from django.contrib.auth.models import User
 
+from datetime import datetime
+
 # Create your models here.
 
 # class Leave(models.Model):
@@ -24,13 +26,18 @@ user.entry.filter(date='...') ->
 
 #Attendance Entries
 class Entry(models.Model):
+    id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    date = models.DateField(blank=True, null=True, unique=True)
-    hours_worked = models.DecimalField(default=10, max_digits=4, decimal_places=2)
+    start_datetime = models.DateTimeField(default=datetime.now())
+    end_datetime = models.DateTimeField(default=datetime.now())
+
+    def hours_worked(self):
+        #return '%s on %s' % self.user.username, self.start_datetime
+        return (self.end_datetime - self.start_datetime).total_seconds() / 60 / 60
 
     class Meta:
         verbose_name_plural = "Entries"
-        ordering = ['date',]
+        ordering = ['start_datetime',]
 
     def __str__(self):
-        return '%s hours worked on %s' % (self.hours_worked, self.date)
+        return '%s | %s hours worked on %s' % (self.user.username, str(self.hours_worked()), self.start_datetime)

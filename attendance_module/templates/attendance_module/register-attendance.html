@@ -1,6 +1,7 @@
 {% extends 'nexus/layout.html' %}
 {% load static %}
 {% load fullcalendar_tags %}
+{% load table_tags %}
 {% block content %}
 <div class='row'>
     <div class='col'>
@@ -18,11 +19,7 @@
                 </div>
             </div>
             <div class='kt-portlet__body'>
-                <h1>{{ user.username }}</h1>
-                <p>Managing for</p>
-                {% comment %} {% for guard in guards %}
-                    <p>{{ guard.user.username }}<p>
-                {% endfor %} {% endcomment %}
+                <h1 class='guard-name__placeholder'>Click a guard</h1>
             </div>
             <div class='kt-portlet__foot'>
                 <div class='row align-items-center'>
@@ -45,34 +42,69 @@
             </div>
             <div class='kt-portlet__body'>
                 <div class='kt_datatable kt-datatable kt-datatable--default kt-datatable--brand kt-datatable--loaded' id='local_data'>
-                    <table class='kt-datatable__table' style='display:block;' id='guard-table'>
-                        <thead class='kt-datatable__head'>
-                            <tr class='kt-datatable__row' style='left: 0px;'>
-                                <th data-field='id' class='kt-datatable__cell kt-datatable__cell--sort'><span style='width:50px;'>ID</span></th>
-                                <th data-field='name' class='kt-datatable__cell kt-datatable__cell--sort'><span style=''>Name</span></th>
-                            </tr>
-                        </thead>
-                        <tbody class='kt-datatable__body'>
-                            {% comment %} {% for guard in guards %}
-                            <tr class='kt-datatable__row' style='left:0px;'>
-                                <td data-field='id' class='kt-datatable__cell' style='padding-left:25px;width:50px;'><span>{{ guard.user.id }}</span></td>
-                                <td data-field='name' class='kt-datatable__cell' style='text-align:center;'><span>{{ guard.user.username }}</span></td>
-                            </tr>
-                            {% endfor %} {% endcomment %}
-                        </tbody>
-                    </table>
                     <script>
-                        var datatable = $('#kt_datatable').KTDatatable({
-                            'ajax': {
-                                'url': '{% url 'attd-register-attd' %}',
-                                'type': 'POST'
-                            },
-                            'columns': [
-                                { 'data': 'id'},
-                                { 'data': 'username'}
-                            ]
+                    $(function() {
+
+                        $('#calendar').append('<p>Select a guard</p>');
+
+                        var csrftoken = Cookies.get('csrftoken');
+                        function csrfSafeMethod(method) {
+                            // these HTTP methods do not require CSRF protection
+                            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                        }
+                        $.ajaxSetup({
+                            beforeSend: function(xhr, settings) {
+                                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                                }
+                            }
                         });
+
+                        var calopt = {
+                            plugins: [ 'interaction' ],
+                            selectable: true,
+                            eventClick: function(info) {
+                                $('#date-summary').text('Shift on ' + info.start.format("D-M-Y"));
+                                var hours_worked = (info.end - info.start) / 3600000;
+                                $('#date-hours_worked').text(info.start.format("HH:mm") + " to " +info.end.format("HH:mm") + " for " + hours_worked + " hours");
+                            }
+                            //unselect: function( jsEvent, view ) {
+                            //    $('#date-summary').text('cleared')
+                            //    $('#date-hours_worked').text('')
+                            //}
+                        };
+                        $('#calendar').fullCalendar(calopt)
+
+                        var eventLoaded = false;
+
+                        var dtopt = {
+                            "initComplete": function() {
+                                console.log('Table rendered.');
+                                $(document).on('click', 'tbody tr', function() {
+                                    
+                                    id = $(this).attr('id');
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: "{% url 'attd-register-attd' %}",
+                                        data: {'p_id': id},
+                                        success: function(response) {
+                                            $('.guard-name__placeholder').text(response.text);
+                                            $('#calendar').fullCalendar('removeEvents');
+                                            $('#calendar').fullCalendar('addEventSource', response.shift_data);
+                                            $('#calendar').fullCalendar('refetchEvents');
+                                            $('#date-summary').text('')
+                                            $('#date-hours_worked').text('')
+                                        }
+                                    });
+                                });
+                            }
+                            
+                        };
+                        var dt = datatableview.initialize($('.datatable'), dtopt);
+                        var table = dt.api;
+                    }); 
                     </script>
+                    {{ datatable }}
                 </div>
             </div>
             <div class='kt-portlet__foot'>
@@ -98,56 +130,7 @@
             </div>
             <div class='kt-portlet__body'>
                 <script>
-                $(function() {
-
-                    var csrftoken = Cookies.get('csrftoken');
-                    function csrfSafeMethod(method) {
-                        // these HTTP methods do not require CSRF protection
-                        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-                    }
-                    $.ajaxSetup({
-                        beforeSend: function(xhr, settings) {
-                            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                                xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                            }
-                        }
-                    });
-                    
-                    $('#calendar').fullCalendar({
-                        plugins: [ 'interaction' ],
-                        selectable: true,
-                        dayClick: function(date, jsEvent, view) {
-                            //alert('Clicked on: ' + date.format());
-                            // change the day's background color just for fun
-                            //$('#salary-summary span').text('today is ' + date.format());
-                            date_clicked = date.format();
-                            $.ajax({
-                                type : 'POST',
-                                url :  "{% url 'attd-register-attd' %}",
-                                data : {'date_clicked': date_clicked},
-                                success : function(response){
-                                //reset the form after successful submit
-                                    console.log('success')
-                                    console.log(response.css)
-                                    $('#date-summary').text(response.data)
-                                    $('#date-hours_worked').text(response.hours_worked)
-                                    if (response.hours_worked < 11) {
-                                        
-                                    }
-                                    $(this).css(response.css);
-                                },
-                                error : function(response){
-                                    console.log(response)
-                                }
-                            });
-                        },
-                        unselect: function( jsEvent, view ) {
-                            $('#date-summary').text('cleared')
-                            $('#date-hours_worked').text('')
-                        }
-                    })
-
-                });
+                
                 </script>
                 <div id='calendar'></div>
             </div>
