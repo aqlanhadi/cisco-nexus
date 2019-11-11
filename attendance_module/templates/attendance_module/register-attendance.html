@@ -61,17 +61,30 @@
                         });
 
                         var calopt = {
+                            header: {
+                                left: 'prev, next today',
+                                center: 'title',
+                                right: 'month, agendaWeek'
+                            },
                             plugins: [ 'interaction' ],
                             selectable: true,
                             eventClick: function(info) {
-                                $('#date-summary').text('Shift on ' + info.start.format("D-M-Y"));
                                 var hours_worked = (info.end - info.start) / 3600000;
-                                $('#date-hours_worked').text(info.start.format("HH:mm") + " to " +info.end.format("HH:mm") + " for " + hours_worked + " hours");
+                                $.ajax({
+                                    type: 'POST',
+                                    url: "{% url 'attd-register-attd' %}",
+                                    data: {'shift_clicked':info.id},
+                                    success: function(response) {
+                                        console.log("ajax1 - > " + response)
+                                        $('#shift-date').text(info.date);
+                                        $('#shift-worked').text(info.start.format("HH:mm") + " to " +info.end.format("HH:mm") + " for " + hours_worked + " hours");
+                                    }
+                                });
+                            },
+                            dayClick: function(date, jsEvent, view) {
+                                $('#calendar').fullCalendar('gotoDate',date);
+                                $('#calendar').fullCalendar('changeView','agendaDay');
                             }
-                            //unselect: function( jsEvent, view ) {
-                            //    $('#date-summary').text('cleared')
-                            //    $('#date-hours_worked').text('')
-                            //}
                         };
                         $('#calendar').fullCalendar(calopt)
 
@@ -81,19 +94,21 @@
                             "initComplete": function() {
                                 console.log('Table rendered.');
                                 $(document).on('click', 'tbody tr', function() {
-                                    
                                     id = $(this).attr('id');
                                     $.ajax({
                                         type: 'POST',
                                         url: "{% url 'attd-register-attd' %}",
                                         data: {'p_id': id},
                                         success: function(response) {
-                                            $('.guard-name__placeholder').text(response.text);
-                                            $('#calendar').fullCalendar('removeEvents');
-                                            $('#calendar').fullCalendar('addEventSource', response.shift_data);
-                                            $('#calendar').fullCalendar('refetchEvents');
-                                            $('#date-summary').text('')
-                                            $('#date-hours_worked').text('')
+                                            console.log("ajax2 - > " + response)
+                                            if (response.u_data!=undefined && response.v_data!=undefined) {
+                                                $('.guard-name__placeholder').text(response.text);
+                                                $('#calendar').fullCalendar('removeEvents');
+                                                $('#calendar').fullCalendar('addEventSource', response.u_data);
+                                                $('#calendar').fullCalendar('addEventSource', response.v_data);
+                                                $('#calendar').fullCalendar('refetchEvents');
+                                                $('#month-salary').text(response.sum_pay);
+                                            }
                                         }
                                     });
                                 });
@@ -156,8 +171,12 @@
                 </div>
             </div>
             <div class='kt-portlet__body'>
-                <div id='date-summary'>Test</div>
-                <div id='date-hours_worked'></div>
+                <h2 id='shift-date' class=''>Shift date</h2>
+                <h2 id='month-salary'>RM 0<h2>
+                <h3 id='shift-hour'>For shift 07:00-19:00</h3>
+                <h3 id='shift-worked'>Registered time: 06:45-19:15</h3>
+                <h3 id='shift-insight'>Shift hours fulfilled/unfulfilled<h3>
+                <h3 id='verify-status'>Unverified<h3>
             </div>
             <div class='kt-portlet__foot'>
                 <div class='row align-items-center'>

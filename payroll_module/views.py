@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.views.generic import ListView
-from users.models import Guard
+from attendance_module.models import Guard
 from .tables import SalaryList
 
 # Create your views here.
