@@ -45,8 +45,8 @@ class Guard(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='guard')
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
 
-    #guard_group = Group.objects.get(name='Guards')
-    #guard_group.user_set.add()
+    guard_group = Group.objects.get(name='Guards')
+    guard_group.user_set.add()
 
     shift = models.ManyToManyField(Shift, through='ShiftStatus')
 
