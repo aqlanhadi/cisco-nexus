@@ -1,66 +1,186 @@
 {% extends 'nexus/layout.html' %}
 {% load static %}
 {% load fullcalendar_tags %}
+{% load table_tags %}
 {% block content %}
 <div class='row'>
     <div class='col'>
         <div class='kt-portlet'>
-            <div class='kt-portlet__head'>
-                <div class='kt-portlet__head-label'>
-                    <h3 class='kt-portlet__head-title'>Guard<h3>
-                </div>
-                <div class='kt-portlet__head-toolbar'>
-                    <div class='kt-portlet__head-group'>
-                        <div class='btn-group'>
-                            <button type='button' class='btn btn-pill'></button>
+            <div class='kt-portlet__body'>
+                <div class='row'>
+                    <div class='col-4'>
+                        <div class="kt-profile__main-pic">
+                        <!-- change pic later -->
+                            <img src="" alt="" id='guard-pic' style='border-radius:50%; max-width:100%; max-height:100%'/>
+                        </div>
+                        </div>
+                    <div class='col-8'>
+                    <div class='row'>
+                            <h6 class="col-sm text-left font-weight-light" id='guard-id__placeholder'></h6>
+                        </div>
+                        <div class='row'>
+                            <h3 class="col-sm text-left font-weight-light" id='guard-name__placeholder'></h3>
+                        </div>
+                        <div class='row'>
+                            <h6 class="col-sm text-left font-weight-light" id='guard-location'></h6>
                         </div>
                     </div>
+                    
                 </div>
             </div>
-            <div class='kt-portlet__body'>
-                <h1>{{ user.username }}</h1>
-                <p>Managing for</p>
-                {% comment %} {% for guard in guards %}
-                    <p>{{ guard.user.username }}<p>
-                {% endfor %} {% endcomment %}
-            </div>
-            <div class='kt-portlet__foot'>
-                <div class='row align-items-center'>
-                    <div>Hi</div>
+            <div class='kt-portlet__foot' style='display:none;' id='details-footer'>
+                <div class='row d-flex flex-row-reverse'>
+                    <button type='button' class='ml-3 mr-2 btn btn-primary btn-pill' id='next-guard'>Next</button>
+                    <button type='button' class='btn btn-secondary btn-pill' id='prev-guard'>Previous</button>
                 </div>
             </div>
         </div>
         <div class='kt-portlet'>
-            <div class='kt-portlet__head'>
-                <div class='kt-portlet__head-label'>
-                    <h3 class='kt-portlet__head-title'>Guard<h3>
-                </div>
-                <div class='kt-portlet__head-toolbar'>
-                    <div class='kt-portlet__head-group'>
-                        <div class='btn-group'>
-                            <button type='button' class='btn btn-pill'></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class='kt-portlet__body'>
                 <div class='kt_datatable kt-datatable kt-datatable--default kt-datatable--brand kt-datatable--loaded' id='local_data'>
-                    <table class='kt-datatable__table' style='display:block;'>
-                        <thead class='kt-datatable__head'>
-                            <tr class='kt-datatable__row' style='left: 0px;'>
-                                <th data-field='id' class='kt-datatable__cell kt-datatable__cell--sort'><span style='width:120px;'>Employee ID</span></th>
-                                <th data-field='name' class='kt-datatable__cell kt-datatable__cell--sort'><span style='width:182px;'>Name</span></th>
-                            </tr>
-                        </thead>
-                        <tbody class='kt-datatable__body'>
-                            {% for guard in guards %}
-                            <tr class='kt-datatable__row' style='left:0px;'>
-                                <td data-field='id' class='kt-datatable__cell' style='padding-left:55px;width:150px;'><span>{{ guard.user.id }}</span></td>
-                                <td data-field='name' class='kt-datatable__cell' tyle='width:182px;'><span>{{ guard.user.username }}</span></td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                    <script>
+                    $(function() {
+                        var csrftoken = Cookies.get('csrftoken');
+                        function csrfSafeMethod(method) {
+                            // these HTTP methods do not require CSRF protection
+                            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                        }
+                        $.ajaxSetup({
+                            beforeSend: function(xhr, settings) {
+                                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                                }
+                            }
+                        });
+
+                        function set_icon(status) {
+                            if (status == 'U') {
+                                $('#verified-icon').text('cancel')
+                                $('#verified-icon').css('color', 'red')
+
+                            } else {
+                                $('#verified-icon').text('check_circle')
+                                $('#verified-icon').css('color', 'green')
+                            }
+                        };
+
+                        function set_event_col(status, event) {
+                            if (status == 'U') {
+                                $('#shift-verify').text('Verify')
+                            } else {
+                                $('#shift-verify').text('Unverify')
+                            }
+                        }
+
+                        function set_verify_text(status) {
+                            if (status == 'U') {
+                                $('#shift-verify').text('Verify')
+                            } else {
+                                $('#shift-verify').text('Unverify')
+                            }
+                        }
+                        var guard_id = 0;
+                        var dtopt = {
+                            "initComplete": function() {
+                                $(document).on('click', '#DataTables_Table_0 tbody tr', function() {
+                                    id = $(this).attr('id');
+                                    $.ajax({
+                                        type: 'GET',
+                                        url: "{% url 'attd-get-shift' %}",
+                                        data: {'p_id': id},
+                                        success: function(response) {
+                                            $('#calendar').show()
+                                            $('#salary-details').show()
+                                            $('#salary-hint-text').hide()
+                                            $('#calendar-hint-text').hide()
+                                            $('#details-footer').show()
+                                            console.log("ajax1 -> " + response.data)
+                                            if (response.u_data!=undefined && response.v_data!=undefined) {
+                                                $('#guard-id__placeholder').text("ID#: " + response.g_id);
+                                                $('#guard-name__placeholder').text(response.name);
+                                                $('#guard-location').text(response.location);
+                                                $('#guard-pic').attr('src', response.pic_url);
+
+                                                $('#salary-amount').text("RM" + response.sum_pay);
+                                                $('#v_pay').text("RM " + response.v_pay);
+                                                $('#u_pay').text("RM " + response.u_pay);
+
+                                                $('#calendar').fullCalendar('removeEvents');
+                                                $('#calendar').fullCalendar('addEventSource', response.u_data);
+                                                $('#calendar').fullCalendar('addEventSource', response.v_data);
+                                                $('#calendar').fullCalendar('refetchEvents');
+                                                $('#month-salary').text(response.sum_pay);
+                                                guard_id = response.g_id;
+                                            }
+                                        }
+                                    });
+                                });
+                            }
+                        };
+
+                        var dt = datatableview.initialize($('.datatable'), dtopt);
+                        var table = dt.api;
+                        var calopt = {
+                            header: {
+                                left: 'today',
+                                center: 'title',
+                                right: 'month, agendaWeek'
+                            },
+                            plugins: [ 'interaction' ],
+                            selectable: true,
+                            eventClick: function(info) {
+                                $('#shift-details').show()
+                                $('#salary-footer').show()
+                                var hours_worked = (info.end - info.start) / 3600000;
+                                start = info.start.format()
+                                $.ajax({
+                                    type: 'GET',
+                                    url: "{% url 'attd-get-details' %}",
+                                    data: {'date':start, 'g_id':guard_id},
+                                    success: function(response) {
+                                        console.log("ajax2 -> " + info.color)
+                                        $('#shift-date').text(info.start.format("dddd, MMMM D, Y"));
+                                        $('#clocked-start').text(response.start);
+                                        $('#clocked-end').text(response.end);
+                                        $('#clocked-duration').text(response.duration + " hrs");
+                                        $('#clocked-duration').css('color', response.d_col);
+                                        if (response.status == 'U') {
+                                            $('#verified-icon').text('cancel')
+                                            $('#verified-icon').css('color', 'red')
+
+                                        } else {
+                                            $('#verified-icon').text('check_circle')
+                                            $('#verified-icon').css('color', 'green')
+                                        }
+                                        $(document).on('click', '#shift-verify',function() {
+                                            console.log('clicked verify')
+                                            $.ajax({
+                                                url: "{% url 'attd-verify' %}",
+                                                data: {'date':start, 'g_id':guard_id},
+                                                success: function(response) {
+                                                    set_icon(response.status)
+                                                    $(info.event).css('color', '#00FF99')
+                                                }
+                                            });
+                                        });
+                                    }
+                                });
+                            },
+                            dayClick: function(date, jsEvent, view) {
+                                $('#calendar').fullCalendar('gotoDate',date);
+                                $('#calendar').fullCalendar('changeView','agendaWeek');
+                            }
+                        };
+                        $('#calendar').fullCalendar(calopt)
+
+                        
+
+                        var eventLoaded = false;
+
+                        
+                    }); 
+                    </script>
+                    {{ datatable }}
                 </div>
             </div>
             <div class='kt-portlet__foot'>
@@ -72,100 +192,95 @@
     </div>
     <div class='col-6'>
         <div class='kt-portlet'>
-            <div class='kt-portlet__head'>
-                <div class='kt-portlet__head-label'>
-                    <h3 class='kt-portlet__head-title'>Calendar Goes Here<h3>
-                </div>
-                <div class='kt-portlet__head-toolbar'>
-                    <div class='kt-portlet__head-group'>
-                        <div class='btn-group'>
-                            <button type='button' class='btn btn-pill'></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class='kt-portlet__body'>
-                <script>
-                $(function() {
-
-                    var csrftoken = Cookies.get('csrftoken');
-                    function csrfSafeMethod(method) {
-                        // these HTTP methods do not require CSRF protection
-                        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-                    }
-                    $.ajaxSetup({
-                        beforeSend: function(xhr, settings) {
-                            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                                xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                            }
-                        }
-                    });
-                    
-                    $('#calendar').fullCalendar({
-                        plugins: [ 'interaction' ],
-                        selectable: true,
-                        dayClick: function(date, jsEvent, view) {
-                            //alert('Clicked on: ' + date.format());
-                            // change the day's background color just for fun
-                            //$('#salary-summary span').text('today is ' + date.format());
-                            date_clicked = date.format();
-                            $.ajax({
-                                type : 'POST',
-                                url :  "{% url 'attd-register-attd' %}",
-                                data : {'date_clicked': date_clicked},
-                                success : function(response){
-                                //reset the form after successful submit
-                                    console.log('success')
-                                    console.log(response.css)
-                                    $('#date-summary').text(response.data)
-                                    $('#date-hours_worked').text(response.hours_worked)
-                                    if (response.hours_worked < 11) {
-                                        
-                                    }
-                                    $(this).css(response.css);
-                                },
-                                error : function(response){
-                                    console.log(response)
-                                }
-                            });
-                        },
-                        unselect: function( jsEvent, view ) {
-                            $('#date-summary').text('cleared')
-                            $('#date-hours_worked').text('')
-                        }
-                    })
-                });
-                </script>
-                <div id='calendar'></div>
-            </div>
-            <div class='kt-portlet__foot'>
-                <div class='row align-items-center'>
-                    <div>Hi</div>
-                </div>
+                <h5 class='font-italic text-center font-weight-light' id='salary-hint-text'>Select an entry to view monthly shift details.</h5>
+                <div id='calendar' style='display:none;'></div>
             </div>
         </div>
     </div>
     <div class='col'>
         <div class='kt-portlet'>
-            <div class='kt-portlet__head'>
-                <div class='kt-portlet__head-label'>
-                    <h3 class='kt-portlet__head-title'>Payroll<h3>
+            <div class='kt-portlet__body'>
+                <h5 class='font-italic text-center font-weight-light' id='calendar-hint-text'>Select an entry to view salary details.</h5>
+                <div id='salary-details' style='display:none;'>
+                    <h6 id='shift-date' class='text-sm-center font-weight-light text-uppercase'>November 2019</h6>
+                    <h2 id='salary-amount' class='text-center font-weight-bold text-uppercase'>RM 0<h2>
+                    <div class="mt-4 row">
+                        <h6 class="col-sm text-center">
+                        Verified
+                        </h6><h6 class="col-sm text-center">
+                        Unverifed
+                        </h6>
+                        <div class="w-100"></div>
+                        <h6 class="col-sm text-center" id='v_pay'>
+                        RM 0
+                        </h6>
+                        <h6 class="col-sm text-center" id='u_pay'>
+                        RM 0
+                        </h6>                
+                    </div>
                 </div>
-                <div class='kt-portlet__head-toolbar'>
-                    <div class='kt-portlet__head-group'>
-                        <div class='btn-group'>
-                            <button type='button' class='btn btn-pill'></button>
-                        </div>
+
+                <div class='' style='display:none' id='shift-details'>
+                    <div class="mt-3 row">
+                        <h6 class="col-sm text-center">
+                        Scheduled shift
+                        </h6>
+                    </div>
+                    <div class="row">
+                        <h6 class="col-sm text-left font-weight-light">
+                        07:00
+                        </h6>
+                        <h6 class="col-sm text-center font-weight-light">
+                        12 hrs
+                        </h6>
+                        <h6 class="col-sm text-right font-weight-light">
+                        19:00
+                        </h6>
+                    </div>
+
+                    <div class="mt-3 row">
+                        <h6 class="col-sm text-center">
+                        Clocked hours
+                        </h6>
+                    </div>
+                    
+                    <div class="row">
+                        <h6 class="col-sm text-left" id='clocked-start'>
+                        06:56
+                        </h6>
+                        <h6 class="col-sm text-center" id='clocked-duration'>
+                        12:07 hrs
+                        </h6>
+                        <h6 class="col-sm text-right" id='clocked-end'>
+                        19:03
+                        </h6>
+                    </div>
+                    <div class="mt-4 row">
+                        <h6 class="col-sm text-left">
+                        </h6>
+                        <h6 class="col-sm text-center">
+                        Fulfilled
+                        </h6><h6 class="col-sm text-center">
+                        Verified
+                        </h6>
+                        <div class="w-100"></div>
+                        <h6 class="col-sm text-left">
+                        Entry status
+                        </h6>
+                        <h6 class="material-icons col-sm text-center" style="color:green;" id='fulfilled-icon'>check_circle</h6>
+                        <h6 class="material-icons col-sm text-center" style="color:red;" id='verified-icon'>cancel</h6>
+                        <div class="w-100"></div>
+                        <h6 class="col-sm text-left"></h6>
+                        <h6 class="col-sm text-left"></h6>
+                        <button type='button' class='btn btn-light btn-elevate btn-pill btn-sm' style='margin:auto; max-width:100%;' id='shift-verify'>Verify</button>
                     </div>
                 </div>
             </div>
-            <div class='kt-portlet__body'>
-                <div id='date-summary'>Test</div>
-                <div id='date-hours_worked'></div>
-            </div>
-            <div class='kt-portlet__foot'>
-                <div class='row align-items-center'>
-                    <div>Hi</div>
+            <div class='kt-portlet__foot' style='display:none' id='salary-footer'>
+                <div class='row d-flex flex-row-reverse'>
+                    <button type='button' class='ml-3 mr-2 btn btn-primary btn-pill' id='next-guard'>Next</button>
+                    <button type='button' class='btn btn-secondary btn-pill' id='prev-guard'>Previous</button>
                 </div>
             </div>
         </div>
