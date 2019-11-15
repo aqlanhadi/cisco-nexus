@@ -64,15 +64,7 @@
                             }
                         };
 
-                        function set_event_col(status, event) {
-                            if (status == 'U') {
-                                $('#shift-verify').text('Verify')
-                            } else {
-                                $('#shift-verify').text('Unverify')
-                            }
-                        }
-
-                        function set_verify_text(status) {
+                        function set_text(status) {
                             if (status == 'U') {
                                 $('#shift-verify').text('Verify')
                             } else {
@@ -117,7 +109,8 @@
                                 });
                             }
                         };
-
+                        var req = null;
+                        var verify_btn = null;
                         var dt = datatableview.initialize($('.datatable'), dtopt);
                         var table = dt.api;
                         var calopt = {
@@ -129,14 +122,20 @@
                             plugins: [ 'interaction' ],
                             selectable: true,
                             eventClick: function(info) {
+                                $(document).off('click', '#shift-verify');
                                 $('#shift-details').show()
                                 $('#salary-footer').show()
                                 var hours_worked = (info.end - info.start) / 3600000;
                                 start = info.start.format()
-                                $.ajax({
+                                verify_btn = $.ajax({
                                     type: 'GET',
                                     url: "{% url 'attd-get-details' %}",
                                     data: {'date':start, 'g_id':guard_id},
+                                    beforeSend: function() {
+                                        if (verify_btn != null) {
+                                            verify_btn.abort()
+                                        }
+                                    },
                                     success: function(response) {
                                         console.log("ajax2 -> " + info.color)
                                         $('#shift-date').text(info.start.format("dddd, MMMM D, Y"));
@@ -144,22 +143,33 @@
                                         $('#clocked-end').text(response.end);
                                         $('#clocked-duration').text(response.duration + " hrs");
                                         $('#clocked-duration').css('color', response.d_col);
+                                        set_text(response.status)
                                         if (response.status == 'U') {
                                             $('#verified-icon').text('cancel')
                                             $('#verified-icon').css('color', 'red')
-
                                         } else {
                                             $('#verified-icon').text('check_circle')
                                             $('#verified-icon').css('color', 'green')
                                         }
+
+                                        event.backgroundColor = 'yellow';
+                                        $('#mycalendar').fullCalendar( 'rerenderEvents' );
+
+                                        
                                         $(document).on('click', '#shift-verify',function() {
-                                            console.log('clicked verify')
-                                            $.ajax({
+                                            console.log("clicked verify")                                            
+                                            req = $.ajax({
                                                 url: "{% url 'attd-verify' %}",
                                                 data: {'date':start, 'g_id':guard_id},
                                                 success: function(response) {
+                                                    console.log(response.status)
                                                     set_icon(response.status)
-                                                    $(info.event).css('color', '#00FF99')
+                                                    set_text(response.status)
+                                                    if (response.status == 'V') {info.color = '#00FF99'}
+                                                    else {info.color = 'white'}
+                                                    console.log(info)
+                                                    console.log(info.color)
+                                                    $('#calendar').fullCalendar('rerenderEvent', info)
                                                 }
                                             });
                                         });
