@@ -1,23 +1,7 @@
 from django import forms
 from django.db import models
-from attendance_module.forms import LeaveDateTime
 from django.contrib.auth.models import User, Group
-
 from datetime import datetime
-
-# Create your models here.
-
-# class Leave(models.Model):
-#     leaveid = models.AutoField(primary_key= True)
-#     name = models.ForeignKey(User, on_delete=models.CASCADE)
-#     startdate = models.DateField()
-#     enddate = models.DateField()
-#     starttime = models.DateTimeField()
-#     endtime = models.DateTimeField()
-#     supDoc = models.FileField(upload_to='support_docs')
-#     reason = models.CharField(max_length=100)
-#     status = models.BooleanField(default= False)
-
 '''
 user.entry.all() -> all records?
 user.entry.filter(date='...') ->
@@ -52,6 +36,19 @@ class Guard(models.Model):
 
     def __str__(self):
         return self.user.username
+
+class Leave(models.Model):
+    STATUS_CHOICES = [('P', 'Pending Approval'), ('A', 'Approved'), ('D', 'Declined')]
+    id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(Guard, on_delete=models.CASCADE)
+    start_datetime = models.DateTimeField()
+    end_datetime = models.DateTimeField()
+    support_docs = models.FileField(upload_to='support_docs', blank=True, null=True)
+    reason = models.CharField(max_length=100)
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='P')
+
+    def __str__(self):
+        return f'{self.user.user.username} Leave'
 
 class ShiftStatus(models.Model):
     STATUS_CHOICES = [('A', 'Active'),('I', 'Inactive')]

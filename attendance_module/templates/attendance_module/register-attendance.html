@@ -3,6 +3,172 @@
 {% load fullcalendar_tags %}
 {% load table_tags %}
 {% block content %}
+<script>
+    $(function() {
+        var csrftoken = Cookies.get('csrftoken');
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        function set_icon(status) {
+            if (status == 'U') {
+                $('#verified-icon').text('cancel')
+                $('#verified-icon').css('color', 'red')
+
+            } else {
+                $('#verified-icon').text('check_circle')
+                $('#verified-icon').css('color', 'green')
+            }
+        };
+
+        function set_text(status) {
+            if (status == 'U') {
+                $('#shift-verify').text('Verify')
+            } else {
+                $('#shift-verify').text('Unverify')
+            }
+        }
+
+        function fetch_events(response) {
+            $('#guard-id__placeholder').text("ID#: " + response.g_id);
+            $('#guard-name__placeholder').text(response.name);
+            $('#guard-location').text(response.location);
+            $('#guard-pic').attr('src', response.pic_url);
+
+            $('#salary-amount').text("RM" + response.sum_pay);
+            $('#v_pay').text("RM " + response.v_pay);
+            $('#u_pay').text("RM " + response.u_pay);
+
+            $('#calendar').fullCalendar('removeEvents');
+            $('#calendar').fullCalendar('addEventSource', response.u_data);
+            $('#calendar').fullCalendar('addEventSource', response.v_data);
+            $('#calendar').fullCalendar('refetchEvents');
+            $('#month-salary').text(response.sum_pay);
+        }
+
+
+        var guard_id = 0;
+        var dtopt = {
+            "searching": false,
+            "paging": false,
+            "info": false,
+            "initComplete": function() {
+                $(document).on('click', '#DataTables_Table_0 tbody tr', function() {
+                    id = $(this).attr('id');
+                    $.ajax({
+                        type: 'GET',
+                        url: "{% url 'attd-get-shift' %}",
+                        data: {'p_id': id},
+                        success: function (response) {
+                            $('#calendar').show()
+                            $('#salary-details').show()
+                            $('#salary-hint-text').hide()
+                            $('#calendar-hint-text').hide()
+                            $('#details-footer').show()
+                            console.log("ajax1 -> " + response.data)
+                            if (response.u_data!=undefined && response.v_data!=undefined) {
+                                fetch_events(response);
+                                guard_id = response.g_id;
+                            }
+                        }
+                    });
+                });
+            }
+        };
+        var req = null;
+        var sub_req = null;
+        var verify_btn = null;
+        var dt = datatableview.initialize($('.datatable'), dtopt);
+        var table = dt.api;
+        $('.datatable').addClass("ui celled table")
+        var calopt = {
+            header: {
+                left: 'today',
+                center: 'title',
+                right: 'month, agendaWeek'
+            },
+            plugins: [ 'interaction' ],
+            selectable: true,
+            eventClick: function(info) {
+                $(document).off('click', '#shift-verify');
+                $(document).off('click', '#submit-salary')
+                $('#shift-details').show()
+                $('#salary-footer').show()
+                var hours_worked = (info.end - info.start) / 3600000;
+                start = info.start.format()
+                verify_btn = $.ajax({
+                    type: 'GET',
+                    url: "{% url 'attd-get-details' %}",
+                    data: {'date':start, 'g_id':guard_id},
+                    beforeSend: function() {
+                        if (verify_btn != null) {
+                            verify_btn.abort()
+                        }
+                    },
+                    success: function(response) {
+                        console.log("ajax2 -> " + info.color)
+                        $('#shift-date').text(info.start.format("dddd, MMMM D, Y"));
+                        $('#clocked-start').text(response.start);
+                        $('#clocked-end').text(response.end);
+                        $('#clocked-duration').text(response.duration + " hrs");
+                        $('#clocked-duration').css('color', response.d_col);
+                        set_text(response.status)
+                        if (response.status == 'U') {
+                            $('#verified-icon').text('cancel')
+                            $('#verified-icon').css('color', 'red')
+                        } else {
+                            $('#verified-icon').text('check_circle')
+                            $('#verified-icon').css('color', 'green')
+                        }                                        
+                        $(document).on('click', '#shift-verify',function() {
+                            console.log("clicked verify")                                            
+                            req = $.ajax({
+                                url: "{% url 'attd-verify' %}",
+                                data: {'date':start, 'g_id':guard_id},
+                                success: function(response) {
+                                    console.log(response.status)
+                                    set_icon(response.status)
+                                    set_text(response.status)
+                                    $.ajax({
+                                        url: "{% url 'attd-get-shift' %}",
+                                        data: {'p_id': guard_id},
+                                        success: function(response) {
+                                            fetch_events(response)
+                                        }
+                                    });
+                                }
+                            });
+                        });
+                        $(document).on('click', '#submit-salary', function() {
+                            console.log("clicked submit")
+                            sub_req = $.ajax({
+                                url: "{% url 'attd-submit' %}",
+                                data: {'g_id': guard_id},
+                                success: function() {
+                                    console.log('salary-saved')
+                                }
+                            });
+                        });
+                    }
+                });
+            },
+            dayClick: function(date, jsEvent, view) {
+                $('#calendar').fullCalendar('gotoDate',date);
+                $('#calendar').fullCalendar('changeView','agendaWeek');
+            }
+        };
+        $('#calendar').fullCalendar(calopt)
+        var eventLoaded = false;
+    }); 
+</script>
 <div class='row'>
     <div class='col'>
         <div class='kt-portlet'>
@@ -31,165 +197,13 @@
             <div class='kt-portlet__foot' style='display:none;' id='details-footer'>
                 <div class='row d-flex flex-row-reverse'>
                     <button type='button' class='ml-3 mr-2 btn btn-primary btn-pill' id='next-guard'>Next</button>
-                    <button type='button' class='btn btn-secondary btn-pill' id='prev-guard'>Previous</button>
+                    <button type='button' class='btn btn-secondary btn-pill' id='submit-salary'>Submit Verified Salary</button>
                 </div>
             </div>
         </div>
         <div class='kt-portlet'>
             <div class='kt-portlet__body'>
-                <div class='kt_datatable kt-datatable kt-datatable--default kt-datatable--brand kt-datatable--loaded' id='local_data'>
-                    <script>
-                    $(function() {
-                        var csrftoken = Cookies.get('csrftoken');
-                        function csrfSafeMethod(method) {
-                            // these HTTP methods do not require CSRF protection
-                            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-                        }
-                        $.ajaxSetup({
-                            beforeSend: function(xhr, settings) {
-                                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                                }
-                            }
-                        });
-
-                        function set_icon(status) {
-                            if (status == 'U') {
-                                $('#verified-icon').text('cancel')
-                                $('#verified-icon').css('color', 'red')
-
-                            } else {
-                                $('#verified-icon').text('check_circle')
-                                $('#verified-icon').css('color', 'green')
-                            }
-                        };
-
-                        function set_text(status) {
-                            if (status == 'U') {
-                                $('#shift-verify').text('Verify')
-                            } else {
-                                $('#shift-verify').text('Unverify')
-                            }
-                        }
-                        var guard_id = 0;
-                        var dtopt = {
-                            "initComplete": function() {
-                                $(document).on('click', '#DataTables_Table_0 tbody tr', function() {
-                                    id = $(this).attr('id');
-                                    $.ajax({
-                                        type: 'GET',
-                                        url: "{% url 'attd-get-shift' %}",
-                                        data: {'p_id': id},
-                                        success: function(response) {
-                                            $('#calendar').show()
-                                            $('#salary-details').show()
-                                            $('#salary-hint-text').hide()
-                                            $('#calendar-hint-text').hide()
-                                            $('#details-footer').show()
-                                            console.log("ajax1 -> " + response.data)
-                                            if (response.u_data!=undefined && response.v_data!=undefined) {
-                                                $('#guard-id__placeholder').text("ID#: " + response.g_id);
-                                                $('#guard-name__placeholder').text(response.name);
-                                                $('#guard-location').text(response.location);
-                                                $('#guard-pic').attr('src', response.pic_url);
-
-                                                $('#salary-amount').text("RM" + response.sum_pay);
-                                                $('#v_pay').text("RM " + response.v_pay);
-                                                $('#u_pay').text("RM " + response.u_pay);
-
-                                                $('#calendar').fullCalendar('removeEvents');
-                                                $('#calendar').fullCalendar('addEventSource', response.u_data);
-                                                $('#calendar').fullCalendar('addEventSource', response.v_data);
-                                                $('#calendar').fullCalendar('refetchEvents');
-                                                $('#month-salary').text(response.sum_pay);
-                                                guard_id = response.g_id;
-                                            }
-                                        }
-                                    });
-                                });
-                            }
-                        };
-                        var req = null;
-                        var verify_btn = null;
-                        var dt = datatableview.initialize($('.datatable'), dtopt);
-                        var table = dt.api;
-                        var calopt = {
-                            header: {
-                                left: 'today',
-                                center: 'title',
-                                right: 'month, agendaWeek'
-                            },
-                            plugins: [ 'interaction' ],
-                            selectable: true,
-                            eventClick: function(info) {
-                                $(document).off('click', '#shift-verify');
-                                $('#shift-details').show()
-                                $('#salary-footer').show()
-                                var hours_worked = (info.end - info.start) / 3600000;
-                                start = info.start.format()
-                                verify_btn = $.ajax({
-                                    type: 'GET',
-                                    url: "{% url 'attd-get-details' %}",
-                                    data: {'date':start, 'g_id':guard_id},
-                                    beforeSend: function() {
-                                        if (verify_btn != null) {
-                                            verify_btn.abort()
-                                        }
-                                    },
-                                    success: function(response) {
-                                        console.log("ajax2 -> " + info.color)
-                                        $('#shift-date').text(info.start.format("dddd, MMMM D, Y"));
-                                        $('#clocked-start').text(response.start);
-                                        $('#clocked-end').text(response.end);
-                                        $('#clocked-duration').text(response.duration + " hrs");
-                                        $('#clocked-duration').css('color', response.d_col);
-                                        set_text(response.status)
-                                        if (response.status == 'U') {
-                                            $('#verified-icon').text('cancel')
-                                            $('#verified-icon').css('color', 'red')
-                                        } else {
-                                            $('#verified-icon').text('check_circle')
-                                            $('#verified-icon').css('color', 'green')
-                                        }
-
-                                        event.backgroundColor = 'yellow';
-                                        $('#mycalendar').fullCalendar( 'rerenderEvents' );
-
-                                        
-                                        $(document).on('click', '#shift-verify',function() {
-                                            console.log("clicked verify")                                            
-                                            req = $.ajax({
-                                                url: "{% url 'attd-verify' %}",
-                                                data: {'date':start, 'g_id':guard_id},
-                                                success: function(response) {
-                                                    console.log(response.status)
-                                                    set_icon(response.status)
-                                                    set_text(response.status)
-                                                    if (response.status == 'V') {info.color = '#00FF99'}
-                                                    else {info.color = 'white'}
-                                                    console.log(info)
-                                                    console.log(info.color)
-                                                    $('#calendar').fullCalendar('rerenderEvent', info)
-                                                }
-                                            });
-                                        });
-                                    }
-                                });
-                            },
-                            dayClick: function(date, jsEvent, view) {
-                                $('#calendar').fullCalendar('gotoDate',date);
-                                $('#calendar').fullCalendar('changeView','agendaWeek');
-                            }
-                        };
-                        $('#calendar').fullCalendar(calopt)
-
-                        
-
-                        var eventLoaded = false;
-
-                        
-                    }); 
-                    </script>
+                <div class='kt_datatable kt-datatable kt-datatable--default kt-datatable--brand kt-datatable--loaded' id='local_data'>        
                     {{ datatable }}
                 </div>
             </div>

@@ -1,5 +1,5 @@
 import json
-import datetime
+from datetime import datetime
 import pytz
 from django.utils import timezone
 from django.http import HttpResponseRedirect, JsonResponse
@@ -8,14 +8,15 @@ from django.core import serializers
 from django.core.files.storage import FileSystemStorage
 from django.db.models import Sum
 
+from datatableview import columns
 from datatableview.views import Datatable, DatatableView
 from django.contrib.auth.models import User
-from .forms import LeaveDateTime, UploadFileForm
+from .forms import LeaveForm
 from .tables import GuardList
-from .models import Entry, Guard
+from .models import Leave, Entry, Guard
 from .serializers import ShiftSerializer
 from users.decorators import group_required, is_guard, is_manager
-
+from payroll_module.models import Salary
 from calendar import HTMLCalendar, monthrange
 # Create your views here.
 
@@ -26,32 +27,112 @@ current_guard = 0
 tz = pytz.timezone('Asia/Kuala_Lumpur')
 timezone.activate(tz)
 
+def upload(file):
+    fs = FileSystemStorage()
+    name = fs.save(file.name, file)
+    uploaded_to = fs.url(name)
+    print("file uploaded to " + uploaded_to)
+
 def dashboard(request):
     return render(request, 'attendance_module/dashboard.html')
 
-#employee
-@is_guard
-def leave_request(request):
-    form = LeaveDateTime()
-    return render(request, 'attendance_module/leave-request.html', {'form': form})
+def new_leave_request(request):
+    if request.method == "POST":
+        user = request.user
+        s_date = datetime.strptime(request.POST['start-date'], '%m/%d/%Y')
+        s_time = datetime.strptime(request.POST['start-time'], '%I:%M %p').time()
+        e_date = datetime.strptime(request.POST['end-date'], '%m/%d/%Y')
+        e_time = datetime.strptime(request.POST['end-time'], '%I:%M %p').time()
+        reason = request.POST['reason']
+        file = request.FILES.get('file', False)
+        #if file:
+            #upload(request.FILES['file'])
+        
+        start_dt = datetime.combine(s_date, s_time)
+        end_dt = datetime.combine(e_date, e_time)
+        l = Leave(
+            user=user.guard.get(), 
+            start_datetime=start_dt, 
+            end_datetime=end_dt, 
+            support_docs=request.FILES['file'] if file else None, 
+            reason=reason
+        )
+        l.save()
+        print("s_ts-: " + start_dt.strftime("%d/%m/%Y %I:%M %p / %H:%M"))
+        
+        #l = Salary(user=user.guard.get())
 
-def upload_file(request):
-    context = {}
-    if request.method == 'POST':
-        uploaded_file = request.FILES['supDoc']
-        fs = FileSystemStorage()
-        name = fs.save(uploaded_file.name, uploaded_file)
-        context['url'] = fs.url(name)
-    return render(request, 'attendance_module/leave-request.html', context)
+    return render(request, 'attendance_module/leave-request.html') 
 
 #manager perm
 @is_manager
 def leave_review(request):
     return render(request, 'attendance_module/leave-review.html')
 
+class LeaveDatatable(Datatable):
+    user = columns.CompoundColumn("Employee", sources=['user__user__first_name', 'user__user__last_name'])
+    location = columns.TextColumn("Location", source=['user__location'])
+    date = columns.DateColumn("Requested For", source=None, processor='get_date')
+    class Meta:
+        columns = [
+            'user',
+            'location',
+            'date',
+            'status'
+        ]
+    
+    def get_date(self, instance, **kwargs):
+        return datetime.strftime(instance.start_datetime, "%A, %d %B %Y")
+    
+    
+
+class LeaveReview(DatatableView):
+    model = Leave
+    datatable_class = LeaveDatatable
+
+    def get_queryset(self):
+        return Leave.objects.filter(user__location__manager__username=self.request.user.username)
+
+    def render_column(self, row, column):
+        if column == 'status':
+            if (row.status == 'P'):
+                print("Hi")
+                return "<p> Hi </p>"
+        else:
+            super(LeaveDatatable, self).render_column(row, column)
+
+def get_leave_details(request):
+    id = request.GET['leave_id']
+    leave = Leave.objects.get(id=id)
+    requestor = leave.user
+    name = requestor.user.first_name + " " + requestor.user.last_name
+    g_id = requestor.user.id
+    img = requestor.user.profile.image.url
+    location = requestor.location.name
+    support_doc_url = leave.support_docs.url if not None else "NA"
+
+    reason = leave.reason
+    print(id)
+
+    response = {
+        'success':'success',
+        'name': name,
+        'id': g_id,
+        'img': img,
+        'location': location,
+        'reason': reason,
+        'doc_url': support_doc_url
+    }
+
+    return JsonResponse(response)
+
 #manager perm
 #################CALENDAR VIEW################
 # Author: Aqlan Nor Azman
+def calculate_salary(mins):
+    pay = int(mins) * PAY_PER_MIN if mins is not None else 0
+    return round(pay, 2)
+
 def get_shift(request):
     g_id = request.GET['p_id']
     guard = User.objects.get(id=g_id)
@@ -121,20 +202,33 @@ def verify_shift(request):
     date = request.GET['date']
     guard_id = request.GET['g_id']
     shift = Entry.objects.get(user__user__id=guard_id, start_datetime=date)
-    
     if (shift.status == 'V'):
         shift.status = 'U'
     else:
         shift.status = 'V'
-
     shift.save()
-
     response = {
         'success': 'success',
         'status': shift.status,
     }
+    return JsonResponse(response)
+
+def save_salary(request):
+    guard_id = request.GET['g_id']
+    guard = Guard.objects.get(user__id=guard_id)
+    v_entries = Entry.objects.filter(user__user__id=guard_id, status='V')
+    total_min = v_entries.aggregate(Sum('minutes_worked'))['minutes_worked__sum']
+
+    total_sal = calculate_salary(total_min)
+    entry = Salary(user=guard, base_pay=total_sal)
+    entry.save()
+
+    response = {
+        'success':'success'
+    }
 
     return JsonResponse(response)
+
 
 class GuardDatatable(Datatable):
     class Meta:

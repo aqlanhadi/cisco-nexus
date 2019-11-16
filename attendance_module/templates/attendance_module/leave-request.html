@@ -1,96 +1,75 @@
 {% extends 'nexus/layout.html' %}
+{% load static %}
 {% block content %}
-{{ form.media }}            {# Adds date-picker required JS and CSS #}
-<div class="kt-content kt-grid__item kt-grid__item--fluid" id="kt_content">
-    <div class="kt-portlet">
-        <div class="kt-portlet__body kt-portlet__body--fit">
-            <div class="kt-grid kt-grid--desktop-xl kt-grid--ver-desktop-xl kt-wizard-v2" id="kt_wizard_v2" data-ktwizard-state="step-first">
-                <div class="kt-grid__item kt-wizard-v2__aside">
-                    <!--begin: Form Wizard Nav -->
-                    <div class="kt-wizard-v2__nav">
-                        <div class="kt-wizard-v2__nav-items">
-                            <a class="kt-wizard-v2__nav-item" href="#" data-ktwizard-type="step" data-ktwizard-state="current"> <span>1</span><i class="fa fa-check"></i> Verify Information </a>
-                            <a class="kt-wizard-v2__nav-item" href="#" data-ktwizard-type="step"> <span>2</span><i class="fa fa-check"></i> Select Date </a>
-                            <a class="kt-wizard-v2__nav-item" href="#" data-ktwizard-type="step"> <span>3</span><i class="fa fa-check"></i> State Reasons </a>
-                            <a class="kt-wizard-v2__nav-item" href="#" data-ktwizard-type="step"> <span>4</span><i class="fa fa-check"></i> Upload Supporting Documents </a>
-                            <!--<a class="kt-wizard-v2__nav-item" href="#" data-ktwizard-type="step"> <span>5</span><i class="fa fa-check"></i> Finalize your request </a> -->
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+{{ form.media }}
+<script>
+    
+</script>
+<div class='row'>
+    <div class='col'>
+        <div class='kt-portlet'>
+            <div class='kt-portlet__body'>
+                <h2>Leave Request Form</h2>
+            </div>
+        </div>
+        <div class='kt-portlet'>
+            <div class='kt-portlet__body'>
+                <form method='POST' enctype="multipart/form-data" id="form">
+                    {% csrf_token %}
+                    <div class="form-group row">
+                        <label class="col align-middle">Start Date</label>
+                        <div class="col-8">
+                            <div class="input-group date">
+                                <input type="text" class="form-control" placeholder="Select date" id="kt_datepicker_2" name='start-date'/>
+                            </div>
                         </div>
                     </div>
-                    <!--end: Form Wizard Nav -->
-                </div>
-                <div class="kt-grid__item kt-grid__item--fluid kt-wizard-v2__wrapper">
-                    <!--begin: Form Wizard Form-->
-                    <form action="/leaveform/" method="POST" enctype="multipart/form-data" id="kt_form">
-                        <!--begin: Form Wizard Step 1-->
-                        <div class="kt-wizard-v2__content" data-ktwizard-type="step-content" data-ktwizard-state="current">
-                            <div class="kt-heading kt-heading--md">Verify your informations</div>
-                            <div class="kt-separator kt-separator--height-xs"></div>
-                            <div class="kt-form__section kt-form__section--first">
-                                <h>{{ user.username }}</h>
+                    <div class="form-group row">
+                        <label class="col">Start Time</label>
+                        <div class="col-8">
+                            <div class="input-group timepicker">
+                                <input class="form-control" id="kt_timepicker_1" placeholder="Select time" type="text" name='start-time'/>
                             </div>
                         </div>
-                        <!--end: Form Wizard Step 1-->
-                        <!--begin: Form Wizard Step 2-->
-                        <div class="kt-wizard-v2__content" data-ktwizard-type="step-content" data-ktwizard-state="current">
-                            <div class="kt-heading kt-heading--md">Choose Date and Time</div>
-                            <div class="kt-separator kt-separator--height-xs"></div>
-                            <div class="kt-form__section kt-form__section--first"></div>
-                            <div class="form-group row">
-                                {% csrf_token %}
-                                {{ form }}
+                    </div>
+                    <div class="form-group row">
+                        <label class="col align-middle">End Date</label>
+                        <div class="col-8">
+                            <div class="input-group date">
+                                <input type="text" class="form-control" placeholder="Select date" id="kt_datepicker_2" name='end-date'/>
                             </div>
                         </div>
-                        <!--end: Form Wizard Step 2-->
-                        <!--begin: Form Wizard Step 3-->
-                        <div class="kt-wizard-v2__content" data-ktwizard-type="step-content" data-ktwizard-state="current">
-                            <div class="kt-heading kt-heading--md">State Reasons</div>
-                            <div class="kt-separator kt-separator--height-xs"></div>
-                            <div class="kt-form__section kt-form__section--first">
-                                <textarea class="form-control" name="reason" id="reason" rows="3"></textarea>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col">Start Time</label>
+                        <div class="col-8">
+                            <div class="input-group timepicker">
+                                <input class="form-control" id="kt_timepicker_1" placeholder="Select time" type="text" name='end-time'/>
                             </div>
                         </div>
-                        <!--end: Form Wizard Step 3-->
-                        <!--begin: Form Wizard Step 4-->
-                        <div class="kt-wizard-v2__content" data-ktwizard-type="step-content">
-                            <div class="kt-heading kt-heading--md">Upload Supporting Documents</div>
-                            <div class="kt-separator kt-separator--height-xs"></div>
-                            <div class="kt-form__section kt-form__section--first"></div>
-                            <div class="form-group row">
-                                    {% csrf_token %}
-                                    <input type="file" name="supDoc">
-                                    <button type="submit">Upload file</button>
-                                    {% if url %}
-                                        <p> Uploaded file: <a href="{{ url }}">{{ url }}</a></p>
-                                    {% endif %}
-                                </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class='col'>Reasons</label>
+                        <div class='col-8'>
+                            <textarea class="form-control" id="exampleTextarea" rows="3" name='reason'></textarea>
                         </div>
-                        <!--end: Form Wizard Step 4-->
-                        <!--begin: Form Wizard Step 5
-                        <div class="kt-wizard-v2__content" data-ktwizard-type="step-content">
-                            <div class="kt-heading kt-heading--md">Finalize your request</div>
-                            <div class="kt-separator kt-separator--height-xs"></div>
-                            <div class="kt-form__section kt-form__section--first">
-                                <h>Name: </h>
-                                <p>{{ user.username }}</p>
-                                <h>Date: </h>
-                                
-                                <h>Reason: </h>
-
-                            </div>
-                        </div> -->
-                        <!--end: Form Wizard Step 5-->
-                        <!--begin: Form Actions -->
-                        <div class="kt-form__actions">
-                            <div class="btn btn-outline-brand btn-md btn-tall btn-wide btn-bold btn-upper" data-ktwizard-type="action-prev"> Previous </div>
-                            <div class="btn btn-brand btn-md btn-tall btn-wide btn-bold btn-upper" data-ktwizard-type="action-submit" value="new leave"> Submit </div>
-                            <div class="btn btn-brand btn-md btn-tall btn-wide btn-bold btn-upper" data-ktwizard-type="action-next"> Next Step </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col align-middle">Supporting Documents</label>
+                        <div class="col-8">
+                            <input class="dropzone" type="file" name="file"/>
                         </div>
-                        <!--end: Form Actions -->
-                    </form>
-                    <!--end: Form Wizard Form-->
-                </div>
+                    </div>
+                    <div class='row d-flex flex-row-reverse'>
+                        <button type='submit' class='mr-7 btn btn-primary btn-pill' id='submit' value='submit'>Submit</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+    <div class='col'></div>
 </div>
 {% endblock content %}
