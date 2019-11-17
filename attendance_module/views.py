@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 import pytz
 from django.utils import timezone
 from django.http import HttpResponseRedirect, JsonResponse
@@ -83,8 +83,6 @@ class LeaveDatatable(Datatable):
     
     def get_date(self, instance, **kwargs):
         return datetime.strftime(instance.start_datetime, "%A, %d %B %Y")
-    
-    
 
 class LeaveReview(DatatableView):
     model = Leave
@@ -92,14 +90,6 @@ class LeaveReview(DatatableView):
 
     def get_queryset(self):
         return Leave.objects.filter(user__location__manager__username=self.request.user.username)
-
-    def render_column(self, row, column):
-        if column == 'status':
-            if (row.status == 'P'):
-                print("Hi")
-                return "<p> Hi </p>"
-        else:
-            super(LeaveDatatable, self).render_column(row, column)
 
 def get_leave_details(request):
     id = request.GET['leave_id']
@@ -179,7 +169,7 @@ def get_details(request):
     status = shift.status
     start = shift.start_datetime.astimezone(tz).strftime("%H:%M")
     end = shift.end_datetime.astimezone(tz).strftime("%H:%M")
-    duration = str(datetime.timedelta(minutes=shift.minutes_worked))[:-3]
+    duration = str(timedelta(minutes=shift.minutes_worked))[:-3]
 
     hours = int(duration[:-3])
     d_col = 'red' if hours <= 11 else 'green'

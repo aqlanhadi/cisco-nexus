@@ -1,5 +1,17 @@
 {% extends 'nexus/layout.html' %}
 {% load static %}
+{% block breadcrumbs %}
+    <span class="kt-subheader__separator kt-hidden"></span>
+    <div class="kt-subheader__breadcrumbs">
+        <a href="{% url 'dashboard' %}" class="kt-subheader__breadcrumbs-home"><i class="flaticon2-shelter"></i></a>
+        <span class="kt-subheader__breadcrumbs-separator"></span>
+        <a href="" class="kt-subheader__breadcrumbs-link">
+            Attendances </a>
+        <span class="kt-subheader__breadcrumbs-separator"></span>
+        <a href="" class="kt-subheader__breadcrumbs-link">
+            Leave Request </a>
+    </div>
+{% endblock breadcrumbs %}
 {% block content %}
 {% load bootstrap4 %}
 {% bootstrap_css %}
@@ -8,68 +20,70 @@
 <script>
     
 </script>
-<div class='row'>
-    <div class='col'>
-        <div class='kt-portlet'>
-            <div class='kt-portlet__body'>
-                <h2>Leave Request Form</h2>
+<div class="kt-content kt-grid__item kt-grid__item--fluid" id="kt_content">
+    <div class='row'>
+        <div class='col'>
+            <div class='kt-portlet'>
+                <div class='kt-portlet__body'>
+                    <h2>Leave Request Form</h2>
+                </div>
+            </div>
+            <div class='kt-portlet'>
+                <div class='kt-portlet__body'>
+                    <form method='POST' enctype="multipart/form-data" id="form">
+                        {% csrf_token %}
+                        <div class="form-group row">
+                            <label class="col align-middle">Start Date</label>
+                            <div class="col-8">
+                                <div class="input-group date">
+                                    <input type="text" class="form-control" placeholder="Select date" id="kt_datepicker_2" name='start-date'/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col">Start Time</label>
+                            <div class="col-8">
+                                <div class="input-group timepicker">
+                                    <input class="form-control" id="kt_timepicker_1" placeholder="Select time" type="text" name='start-time'/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col align-middle">End Date</label>
+                            <div class="col-8">
+                                <div class="input-group date">
+                                    <input type="text" class="form-control" placeholder="Select date" id="kt_datepicker_2" name='end-date'/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col">Start Time</label>
+                            <div class="col-8">
+                                <div class="input-group timepicker">
+                                    <input class="form-control" id="kt_timepicker_1" placeholder="Select time" type="text" name='end-time'/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class='col'>Reasons</label>
+                            <div class='col-8'>
+                                <textarea class="form-control" id="exampleTextarea" rows="3" name='reason'></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col align-middle">Supporting Documents</label>
+                            <div class="col-8">
+                                <input class="dropzone" type="file" name="file"/>
+                            </div>
+                        </div>
+                        <div class='row d-flex flex-row-reverse'>
+                            <button type='submit' class='mr-7 btn btn-primary btn-pill' id='submit' value='submit'>Submit</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-        <div class='kt-portlet'>
-            <div class='kt-portlet__body'>
-                <form method='POST' enctype="multipart/form-data" id="form">
-                    {% csrf_token %}
-                    <div class="form-group row">
-                        <label class="col align-middle">Start Date</label>
-                        <div class="col-8">
-                            <div class="input-group date">
-                                <input type="text" class="form-control" placeholder="Select date" id="kt_datepicker_2" name='start-date'/>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col">Start Time</label>
-                        <div class="col-8">
-                            <div class="input-group timepicker">
-                                <input class="form-control" id="kt_timepicker_1" placeholder="Select time" type="text" name='start-time'/>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col align-middle">End Date</label>
-                        <div class="col-8">
-                            <div class="input-group date">
-                                <input type="text" class="form-control" placeholder="Select date" id="kt_datepicker_2" name='end-date'/>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col">Start Time</label>
-                        <div class="col-8">
-                            <div class="input-group timepicker">
-                                <input class="form-control" id="kt_timepicker_1" placeholder="Select time" type="text" name='end-time'/>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class='col'>Reasons</label>
-                        <div class='col-8'>
-                            <textarea class="form-control" id="exampleTextarea" rows="3" name='reason'></textarea>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col align-middle">Supporting Documents</label>
-                        <div class="col-8">
-                            <input class="dropzone" type="file" name="file"/>
-                        </div>
-                    </div>
-                    <div class='row d-flex flex-row-reverse'>
-                        <button type='submit' class='mr-7 btn btn-primary btn-pill' id='submit' value='submit'>Submit</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+        <div class='col'></div>
     </div>
-    <div class='col'></div>
 </div>
 {% endblock content %}
