@@ -69,6 +69,22 @@ def new_leave_request(request):
 def leave_review(request):
     return render(request, 'attendance_module/leave-review.html')
 
+def approve(request):
+    id = request.GET['id']
+    leave = Leave.objects.get(id=id)
+
+    leave.status = 'A'
+    leave.save()
+    response = {
+        'status': leave.status,
+        'success':'success'
+    }
+    return JsonResponse(response)
+
+def reject(request):
+    id  = request.GET['id']
+    leave = Leave.object.get(id=id)
+
 class LeaveDatatable(Datatable):
     user = columns.CompoundColumn("Employee", sources=['user__user__first_name', 'user__user__last_name'])
     location = columns.TextColumn("Location", source=['user__location'])
@@ -100,7 +116,7 @@ def get_leave_details(request):
     img = requestor.user.profile.image.url
     location = requestor.location.name
     support_doc_url = leave.support_docs.url if not None else "NA"
-
+    status = leave.status
     reason = leave.reason
     print(id)
 
@@ -111,7 +127,8 @@ def get_leave_details(request):
         'img': img,
         'location': location,
         'reason': reason,
-        'doc_url': support_doc_url
+        'doc_url': support_doc_url,
+        'status': status
     }
 
     return JsonResponse(response)

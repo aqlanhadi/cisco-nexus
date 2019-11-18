@@ -37,6 +37,20 @@
             if (response.doc_url != "NA") {
                 $('#doc_placeholder').attr('src', response.doc_url)
             } 
+            var status_btn = $('#status-icon')
+            if (response.status == 'P') {
+                status_btn.removeClass('btn-danger btn-success')
+                status_btn.addClass('btn-warning')
+                status_btn.text("Pending")
+            } else if (response.status == 'A') {
+                status_btn.removeClass('btn-danger btn-warning')
+                status_btn.addClass('btn-success')
+                status_btn.text("Approved")
+            } else {
+                status_btn.removeClass('btn-warning btn-success')
+                status_btn.addClass('btn-danger')
+                status_btn.text("Declined")
+            }
         }
 
         var dtopt = {
@@ -54,6 +68,24 @@
                             fetch_data(response)
                             $('#review-area').show()
                             $('#g-det-area').show()
+                            $('#approve').on('click', function() {
+                                $.ajax({
+                                    url: "{% url 'attd-approve' %}",
+                                    data: {'id':id},
+                                    success: function(response) {
+                                        console.log(response.status)
+                                    }
+                                })
+                            })
+                            $('#reject').on('click', function(){
+                                $.ajax({
+                                    url: "{% url 'attd-reject' %}",
+                                    data: {'id':id},
+                                    success: function(response) {
+                                        console.log()
+                                    }
+                                })
+                            })
                         }
                     });
                 });
@@ -85,8 +117,8 @@
                             <img src="" alt="" id='guard-pic' style='border-radius:50%; max-width:100%; max-height:100%'/>
                             </div>
                         </div>
-                        <div class='col-sm-8'>
-                        <div class='row'>
+                        <div class='col-sm-6'>
+                            <div class='row'>
                                 <h6 class="col-sm text-left font-weight-light" id='guard-id__placeholder'></h6>
                             </div>
                             <div class='row'>
@@ -96,7 +128,9 @@
                                 <h6 class="col-sm text-left font-weight-light" id='guard-location'></h6>
                             </div>
                         </div>
-                        
+                        <div class='col-sm-2 text-right'>
+                                <p id="status-icon" class="btn btn-pill"></p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -120,8 +154,8 @@
                 </div>
                 <div class='kt-portlet__foot' style='' id='review-footer'>
                     <div class='row d-flex flex-row-reverse'>
-                        <button type='button' class='ml-3 mr-2 btn btn-primary btn-pill' id='next-guard'>Approve</button>
-                        <button type='button' class='btn btn-danger btn-pill' id='prev-guard'>Reject</button>
+                        <button type='button' class='ml-3 mr-2 btn btn-primary btn-pill' id='approve'>Approve</button>
+                        <button type='button' class='btn btn-danger btn-pill' id='reject'>Reject</button>
                     </div>
                 </div>
             </div>
