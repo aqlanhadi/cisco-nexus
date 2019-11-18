@@ -42,10 +42,15 @@
         };
 
         function set_text(status) {
+            var item = $('#shift-verify')
             if (status == 'U') {
-                $('#shift-verify').text('Verify')
+                item.removeClass('btn-danger')
+                item.text('Verify')
+                item.addClass('btn-success')
             } else {
-                $('#shift-verify').text('Unverify')
+                item.removeClass('btn-success')
+                item.text('Unverify')
+                item.addClass('btn-danger')
             }
         }
 
@@ -80,11 +85,9 @@
                         url: "{% url 'attd-get-shift' %}",
                         data: {'p_id': id},
                         success: function (response) {
-                            $('#calendar').show()
-                            $('#salary-details').show()
-                            $('#salary-hint-text').hide()
-                            $('#calendar-hint-text').hide()
-                            $('#details-footer').show()
+                            $('#calendar-area').show()
+                            $('#guard-details').show()
+                            $('#review-area').show()
                             console.log("ajax1 -> " + response.data)
                             if (response.u_data!=undefined && response.v_data!=undefined) {
                                 fetch_events(response);
@@ -184,7 +187,7 @@
 <div class="kt-content kt-grid__item kt-grid__item--fluid" id="kt_content">
     <div class='row'>
         <div class='col'>
-            <div class='kt-portlet'>
+            <div class='kt-portlet' id='guard-details' style='display:none;'>
                 <div class='kt-portlet__body'>
                     <div class='row'>
                         <div class='col-4'>
@@ -207,39 +210,32 @@
                         
                     </div>
                 </div>
-                <div class='kt-portlet__foot' style='display:none;' id='details-footer'>
+                <div class='kt-portlet__foot' id='details-footer'>
                     <div class='row d-flex flex-row-reverse'>
                         <button type='button' class='ml-3 mr-2 btn btn-primary btn-pill' id='next-guard'>Next</button>
                         <button type='button' class='btn btn-secondary btn-pill' id='submit-salary'>Submit Verified Salary</button>
                     </div>
                 </div>
             </div>
-            <div class='kt-portlet'>
+            <div class='kt-portlet' id='table-area'>
                 <div class='kt-portlet__body'>
                     <div class='kt_datatable kt-datatable kt-datatable--default kt-datatable--brand kt-datatable--loaded' id='local_data'>        
                         {{ datatable }}
                     </div>
                 </div>
-                <div class='kt-portlet__foot'>
-                    <div class='row align-items-center'>
-                        <div>Hi</div>
-                    </div>
-                </div>
             </div>
         </div>
         <div class='col-6'>
-            <div class='kt-portlet'>
+            <div class='kt-portlet' id='calendar-area' style='display:none;'>
                 <div class='kt-portlet__body'>
-                    <h5 class='font-italic text-center font-weight-light' id='salary-hint-text'>Select an entry to view monthly shift details.</h5>
-                    <div id='calendar' style='display:none;'></div>
+                    <div id='calendar'></div>
                 </div>
             </div>
         </div>
         <div class='col'>
-            <div class='kt-portlet'>
+            <div class='kt-portlet' id='review-area' style='display:none;'>
                 <div class='kt-portlet__body'>
-                    <h5 class='font-italic text-center font-weight-light' id='calendar-hint-text'>Select an entry to view salary details.</h5>
-                    <div id='salary-details' style='display:none;'>
+                    <div id='salary-details'>
                         <h6 id='shift-date' class='text-sm-center font-weight-light text-uppercase'>November 2019</h6>
                         <h2 id='salary-amount' class='text-center font-weight-bold text-uppercase'>RM 0<h2>
                         <div class="mt-4 row">
@@ -310,12 +306,12 @@
                             <div class="w-100"></div>
                             <h6 class="col-sm text-left"></h6>
                             <h6 class="col-sm text-left"></h6>
-                            <button type='button' class='btn btn-light btn-elevate btn-pill btn-sm' style='margin:auto; max-width:100%;' id='shift-verify'>Verify</button>
                         </div>
                     </div>
                 </div>
                 <div class='kt-portlet__foot' style='display:none' id='salary-footer'>
                     <div class='row d-flex flex-row-reverse'>
+                        <button type='button' class='ml-3 mr-2 btn btn-success btn-pill' id='shift-verify'>Approve Entry</button>
                         <button type='button' class='ml-3 mr-2 btn btn-primary btn-pill' id='next-guard'>Next</button>
                         <button type='button' class='btn btn-secondary btn-pill' id='prev-guard'>Previous</button>
                     </div>
