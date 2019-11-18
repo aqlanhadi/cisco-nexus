@@ -28,21 +28,13 @@
             }
         });
 
-        function fetch_data(response) {
-            $('#guard-id__placeholder').text("ID#: " + response.id);
-            $('#guard-name__placeholder').text(response.name);
-            $('#guard-location').text(response.location);
-            $('#guard-pic').attr('src', response.img);
-            $('#reason').text(response.reason)
-            if (response.doc_url != "NA") {
-                $('#doc_placeholder').attr('src', response.doc_url)
-            } 
+        function set_button_status(response) {
             var status_btn = $('#status-icon')
-            if (response.status == 'P') {
+            if (response == 'P') {
                 status_btn.removeClass('btn-danger btn-success')
                 status_btn.addClass('btn-warning')
                 status_btn.text("Pending")
-            } else if (response.status == 'A') {
+            } else if (response == 'A') {
                 status_btn.removeClass('btn-danger btn-warning')
                 status_btn.addClass('btn-success')
                 status_btn.text("Approved")
@@ -53,6 +45,20 @@
             }
         }
 
+        function fetch_data(response) {
+            $('#guard-id__placeholder').text("ID#: " + response.id);
+            $('#guard-name__placeholder').text(response.name);
+            $('#guard-location').text(response.location);
+            $('#guard-pic').attr('src', response.img);
+            $('#reason').text(response.reason)
+            if (response.doc_url != "NA") {
+                $('#doc_placeholder').attr('src', response.doc_url)
+            } 
+            set_button_status(response.status)
+        }
+
+        var l_id = 0
+
         var dtopt = {
             "searching": false,
             "paging": false,
@@ -60,6 +66,7 @@
             "initComplete": function() {
                 $(document).on('click', '#DataTables_Table_0 tbody tr', function() {
                     id = $(this).attr('id');
+                    l_id = id;
                     $.ajax({
                         url: "{% url 'get-leave-details' %}",
                         data: {'leave_id': id},
@@ -67,25 +74,7 @@
                             console.log("hi")
                             fetch_data(response)
                             $('#review-area').show()
-                            $('#g-det-area').show()
-                            $('#approve').on('click', function() {
-                                $.ajax({
-                                    url: "{% url 'attd-approve' %}",
-                                    data: {'id':id},
-                                    success: function(response) {
-                                        console.log(response.status)
-                                    }
-                                })
-                            })
-                            $('#reject').on('click', function(){
-                                $.ajax({
-                                    url: "{% url 'attd-reject' %}",
-                                    data: {'id':id},
-                                    success: function(response) {
-                                        console.log()
-                                    }
-                                })
-                            })
+                            $('#g-det-area').show()                            
                         }
                     });
                 });
@@ -96,6 +85,29 @@
         // $('.datatable').addClass("celled")
         // $('.datatable').addClass("table")
         var table = dt.api;
+
+        $('#approve').on('click', function() {
+            $.ajax({
+                url: "{% url 'attd-approve' %}",
+                data: {'id':l_id},
+                success: function(response) {
+                    console.log(response.status)
+                    set_button_status(response.status)
+                    table.ajax.reload()
+                    console.log(dt)
+                }
+            })
+        })
+        $('#reject').on('click', function(){
+            $.ajax({
+                url: "{% url 'attd-reject' %}",
+                data: {'id':id},
+                success: function(response) {
+                    console.log(response.status)
+                    set_button_status(response.status)
+                }
+            })
+        })
     });
 </script>
 <div class="kt-content kt-grid__item kt-grid__item--fluid" id="kt_content">

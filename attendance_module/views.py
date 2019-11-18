@@ -83,7 +83,14 @@ def approve(request):
 
 def reject(request):
     id  = request.GET['id']
-    leave = Leave.object.get(id=id)
+    leave = Leave.objects.get(id=id)
+    leave.status = 'D'
+    leave.save()
+    response = {
+        'status' : leave.status,
+        'success': 'success'
+    }
+    return JsonResponse(response)
 
 class LeaveDatatable(Datatable):
     user = columns.CompoundColumn("Employee", sources=['user__user__first_name', 'user__user__last_name'])
