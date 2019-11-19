@@ -1,10 +1,17 @@
+from datetime import datetime
 from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.views.generic import ListView
+from django.http import JsonResponse
 from attendance_module.models import Guard
 from datatableview.views import Datatable, DatatableView
 from .models import Salary
 from .tables import SalaryList
+
+from random import randint, shuffle
+from chartjs.colors import next_color, COLORS
+from chartjs.views.lines import BaseLineChartView
+from chartjs.util import date_range, value_or_null
 
 # Create your views here.
 
@@ -28,17 +35,59 @@ def dashboard(request):
 def breakdown(request):
     return render(request, 'payroll_module/salary-breakdown.html')
 
+def get_salary(request):
+    id = request.GET['s_id']
+    record = Salary.objects.get(id=id)
+    month = datetime.strftime(datetime.strptime(str(record.month), '%m'), '%B')
+    paid = record.pay_date
+    total = record.base_pay
+    response = {
+        'success':'success',
+        'month': month,
+        'total': total
+    }
+    return JsonResponse(response)
+
 class SalaryDatatable(Datatable):
-    
     class Meta:
         columns = ['id', 'pay_date', 'base_pay']
 
 class SalaryBreakdown(DatatableView):
     model = Salary
     datatable_class = SalaryDatatable
-
     def get_queryset(self):
         return Salary.objects.filter(user__user__username=self.request.user.username)
 
 def history(request):
     return render(request, 'payroll_module/salary-history.html')
+
+
+
+
+####CHART TEST####
+class ChartMixin(object):
+    def get_providers(self):
+        """Return names of datasets."""
+        return ["Central", "Eastside", "Westside"]
+
+    def get_labels(self):
+        """Return 7 labels."""
+        return ["January", "February", "March", "April", "May", "June", "July"]
+
+    def get_data(self):
+        """Return 3 random dataset to plot."""
+        def data():
+            """Return 7 randint between 0 and 100."""
+            return [randint(0, 100) for x in range(7)]
+
+        return [data() for x in range(3)]
+    
+    def get_colors(self):
+        """Return a new shuffle list of color so we change the color
+        each time."""
+        colors = COLORS[:]
+        shuffle(colors)
+        return next_color(colors)
+
+class LineChartJSONView(ChartMixin, BaseLineChartView):
+    pass

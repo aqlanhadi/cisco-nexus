@@ -65,16 +65,19 @@ class ShiftStatus(models.Model):
     
 #Attendance Entries
 class Entry(models.Model):
+    active = models.BooleanField(default=True)
+
     STATUS_CHOICES = [('U', 'Unverified'), ('V', 'Verified')]
     id = models.AutoField(primary_key=True)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='U')
     user = models.ForeignKey(Guard, on_delete=models.CASCADE)
     start_datetime = models.DateTimeField(default=datetime.now())
-    end_datetime = models.DateTimeField(default=datetime.now())
+    end_datetime = models.DateTimeField(blank=True, null=True)
     minutes_worked = models.IntegerField(max_length=32, editable=False, default=0)
 
     def save(self, *args, **kwargs):
-        self.minutes_worked = (self.end_datetime - self.start_datetime).total_seconds() / 60
+        if self.active == False and self.end_datetime is not None:
+            self.minutes_worked = (self.end_datetime - self.start_datetime).total_seconds() / 60
         super(Entry, self).save(*args, **kwargs)
     
     def verify(self):

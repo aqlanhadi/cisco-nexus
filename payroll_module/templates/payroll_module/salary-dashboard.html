@@ -1,4 +1,5 @@
 {% extends 'nexus/layout.html' %}
+{% load static %}
 {% block breadcrumbs %}
     <span class="kt-subheader__separator kt-hidden"></span>
     <div class="kt-subheader__breadcrumbs">
@@ -9,7 +10,230 @@
     </div>
 {% endblock breadcrumbs %}
 {% block content %}
-<div class="kt-content kt-grid__item kt-grid__item--fluid" id="kt_content">
 
+<div class="kt-content kt-grid__item kt-grid__item--fluid" id="kt_content">
+    <div class="row">
+        <!-- Overview pane -->
+        <div class="col-lg-6 col-xl-4 order-lg-1 order-xl-1">
+            <!--begin::Portlet-->
+            <div class="kt-portlet kt-portlet--height-fluid">
+                <div class="kt-portlet__head">
+                    <div class="kt-portlet__head-label">
+                        <h3 class="kt-portlet__head-title">
+                            Overview
+                        </h3>
+                    </div>
+                </div>
+                <div class="kt-portlet__body">
+                    <div class="kt-widget-1">
+                        <ul class="nav nav-pills nav-tabs-btn nav-pills-btn-brand" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="tab" href="#kt_tabs_19_15c7a01a3c260f" role="tab">
+                                    <span class="nav-link-title" id='clock-in'>Clock In</span> 
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#kt_tabs_19_15c7a01a3c260f" role="tab">
+                                    <span class="nav-link-title" id='clock-out'>Clock Out</span> 
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- <div class="tab-content">
+                            <div class="tab-pane fade active show" id="kt_tabs_19_15c7a01a3c260f" role="tabpanel">
+                                <div class="kt-widget-1__item">
+                                    <div class="kt-widget-1__item-info">
+                                        <a href="#" class="kt-widget-1__item-title"> Guard 1 </a> 
+                                        <div class="kt-widget-1__item-desc">25 November 2019</div>
+                                    </div>
+                                    <div class="kt-widget-1__item-stats">
+                                        <div class="kt-widget-1__item-value"></div>
+                                        <div class="kt-widget-1__item-progress">
+                                            <div class="progress">
+                                                <div class="progress-bar bg-danger" role="progressbar" style="width: 79%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="kt_tabs_19_25c7a01a3c260f" role="tabpanel">
+                                <div class="kt-widget-1__item">
+                                    <div class="kt-widget-1__item-info">
+                                        <a href="#" class="kt-widget-1__item-title">Taylor's University</a> 
+                                        <div class="kt-widget-1__item-desc">5 Alerts</div>
+                                    </div>
+                                    <div class="kt-widget-1__item-stats">
+                                        <div class="kt-widget-1__item-value">+4%</div>
+                                        <div class="kt-widget-1__item-progress">
+                                            <div class="progress">
+                                                <div class="progress-bar bg-focus" role="progressbar" style="width: 90%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="kt_tabs_19_35c7a01a3c260f" role="tabpanel">
+                                <div class="kt-widget-1__item">
+                                    <div class="kt-widget-1__item-info">
+                                        <a href="#" class="kt-widget-1__item-title">134 Unverified Entries</a> 
+                                        <div class="kt-widget-1__item-desc">Due in 15 days</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+            <!--end::Portlet-->
+        </div>
+
+        <!-- charts pane -->
+        <div class="col-lg-12 col-xl-8 order-lg-1 order-xl-1">
+            <!--begin::Portlet-->
+            <div class="kt-portlet kt-portlet--height-fluid">
+                <div class="kt-portlet__head">
+                    <div class="kt-portlet__head-label">
+                        <h3 class="kt-portlet__head-title">
+                            Insights
+                        </h3>
+                    </div>
+                    <!-- <div class="kt-portlet__head-toolbar">
+                        <div class="kt-portlet__head-actions"> <a href="#" class="btn btn-default btn-sm btn-bold">XML</a> <a href="#" class="btn btn-default btn-sm btn-bold">CSV</a> </div>
+                    </div> -->
+                </div>
+                <div class="kt-portlet__body kt-portlet__body--fluid kt-portlet__body--fit">
+                    <div class="kt-widget-2">
+                        <div class="kt-widget-2__content kt-portlet__space-x">
+                            <div class="kt-widget-2__stats">
+                                <div class="kt-widget-2__stats-author">
+                                    <div class="kt-widget-2__stats-bullet kt-bg-brand"></div>
+                                    <span class="kt-widget-2__stats-text">Pay</span> 
+                                </div>
+                                <div class="kt-widget-2__stats-product">
+                                    <div class="kt-widget-2__stats-bullet kt-bg-danger"></div>
+                                    <span class="kt-widget-2__stats-text">Productivity</span> 
+                                </div>
+                            </div>
+                        </div>
+                        <div class="kt-widget-2__chart">
+                            <canvas id="test_chart" height="250"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--end::Portlet-->
+        </div>
+    </div>
 </div>
+<script type="text/javascript" src="{% static 'js/Chart.min.js' %}"></script>
+<!-- <script>
+        var max = 80;
+        var color = "#242939";
+        var ctx = document.getElementById('test_chart').getContext("2d");
+        var gradient = ctx.createLinearGradient(0, 0, 0, 120);
+        gradient.addColorStop(0, Chart.helpers.color(color).alpha(0.3).rgbString());
+        gradient.addColorStop(1, Chart.helpers.color(color).alpha(0).rgbString());
+
+        var data = [30, 35, 45, 65, 35, 50, 40, 60, 35, 45];
+
+        var mainConfig = {
+            type: 'line',
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October'],
+                datasets: [{
+                    label: 'Orders',
+                    borderColor: color,
+                    borderWidth: 3,
+                    backgroundColor: gradient,
+                    pointBackgroundColor: "#242939",
+                    data: data,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                title: {
+                    display: false,
+                    text: 'Stacked Area'
+                },
+                tooltips: {
+                    enabled: true,
+                    intersect: false,
+                    mode: 'nearest',
+                    bodySpacing: 5,
+                    yPadding: 10,
+                    xPadding: 10, 
+                    caretPadding: 0,
+                    displayColors: false,
+                    backgroundColor: "#242939",
+                    titleFontColor: '#ffffff', 
+                    cornerRadius: 4,
+                    footerSpacing: 0,
+                    titleSpacing: 0
+                },
+                legend: {
+                    display: false,
+                    labels: {
+                        usePointStyle: false
+                    }
+                },
+                hover: {
+                    mode: 'index'
+                },
+                scales: {
+                    xAxes: [{
+                        display: false,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Month'
+                        },
+                        ticks: {
+                            display: false,
+                            beginAtZero: true,
+                        }
+                    }],
+                    yAxes: [{
+                        display: false,
+                        scaleLabel: {
+                            display: false,
+                            labelString: 'Value'
+                        },
+                        gridLines: {
+                            color: '#eef2f9',
+                            drawBorder: false,
+                            offsetGridLines: true,
+                            drawTicks: false
+                        },
+                        ticks: {
+                            max: max,
+                            display: false,
+                            beginAtZero: true
+                        }
+                    }]
+                },
+                elements: {
+                    point: {
+                        radius: 0,
+                        borderWidth: 0,
+                        hoverRadius: 0,
+                        hoverBorderWidth: 0
+                    }
+                },
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0
+                    }
+                }
+            }
+        };
+
+        var chart = new Chart(ctx, mainConfig);
+
+        // Update chart on window resize
+        KTUtil.addResizeHandler(function() {
+            chart.update();
+        });
+</script> -->
 {% endblock content %}

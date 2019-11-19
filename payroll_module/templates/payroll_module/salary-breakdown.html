@@ -32,30 +32,62 @@
             "searching": false,
             "paging": false,
             "info": false,
-            // "initComplete": function() {
-                
-            // }
+            "initComplete": function() {
+                $(document).on('click', '#DataTables_Table_0 tbody tr', function() {
+                    id = $(this).attr('id');
+                    console.log('clicked on row -> id ' + id)
+                    $.ajax({
+                        type: 'GET',
+                        url: "{% url 'get-salary' %}",
+                        data: {'s_id': id},
+                        success: function (response) {
+                            $('#details').show()
+                            print_details(response)
+                        }
+                    });
+                });
+            }
         };
         var dt = datatableview.initialize($('.datatable'), dtopt);
+        var table = dt.api();
         $('.datatable').addClass("ui celled table")
-        // $('.datatable').addClass("celled")
-        // $('.datatable').addClass("table")
-        var table = dt.api;
+
+        function print_details(response) {
+            $('#check_month').text(response.month)
+            $('#a_pay').text(response.total)
+        }
     });
 </script>
 <div class="kt-content kt-grid__item kt-grid__item--fluid" id="kt_content">
     <div class='row'>
-        <div class='col'>
+        <div class='col-sm-6'>
             <div class='kt-portlet'>
                 <div class='kt-portlet__body'>
                     {{ datatable }}
                 </div>
             </div>
         </div>
-        <div class='col'>
+        <div class='col-sm-6' id='details' style='display: none;'>
             <div class='kt-portlet'>
                 <div class='kt-portlet__body'>
-                    <p>Breakdowns</p>
+                    <h1 id='check_month'></h1>
+                    <div class='kt-widget-2'>
+                        <div class='kt-widget-2__content kt-portlet__space-x' style='padding: 0px !important;'>
+                            <div class='row'>
+                                <div class='col'>
+                                    <div class="kt-widget-2__item" style="margin-top: 1.4rem !important;">
+                                        <div class="kt-widget-2__item-stats">
+                                            <div class="kt-widget-2__item-info">
+                                                <h6 class="kt-widget-2__item-text">Total</h6>
+                                            </div>
+                                        </div>
+                                        <div class="kt-widget-2__item-title" id='a_pay' style='font-size: 3rem !important;'></div>
+                                        
+                                    </div>
+                                </div>
+                            </div>                            
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

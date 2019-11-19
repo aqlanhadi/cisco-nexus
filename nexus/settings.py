@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'attendance_module',
     'payroll_module',
 
+    'chartjs',
     'fullcalendar',
     'datatableview',
     'table',

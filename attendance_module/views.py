@@ -243,6 +243,33 @@ def save_salary(request):
 
     return JsonResponse(response)
 
+def check_active(request):
+    active = Entry.objects.filter(user__user__id=request.user.id, end_datetime__isnull=True)
+    print(active.first().active)
+    if active.count() != 0:
+        return JsonResponse({'active':True})
+    else:
+        return JsonResponse({'active':False})
+
+
+def clock_toggle(request):
+    active = Entry.objects.filter(user__user__id=request.user.id, end_datetime__isnull=True)
+    if active.count() != 0:
+        entry = active.first()
+        entry.active = False
+        entry.end_datetime = tz.localize(datetime.now())
+        entry.save()
+        response = False
+    else:
+        entry = Entry(user=request.user.guard.get())
+        entry.save()
+        response = True
+
+    response = {
+        'active':response
+    }
+    return JsonResponse(response)
+
 
 class GuardDatatable(Datatable):
     class Meta:

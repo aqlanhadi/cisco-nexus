@@ -1,5 +1,7 @@
+{% load users_tags %}
 {% load static %}
-<div class="kt-user-card kt-margin-b-40 kt-margin-b-30-tablet-and-mobile" style="background-image: {% static  'assets/media/misc/head_bg_sm.jpg' %}">
+{% static '/nexus/media/misc/head_bg_sm.jpg' as bg %}
+<div class="kt-user-card kt-margin-b-40 kt-margin-b-30-tablet-and-mobile" style="background-image: url('{{ bg }}');")>
 	<div class="kt-user-card__wrapper">
 		<div class="kt-user-card__pic">
 
@@ -7,8 +9,13 @@
 			<img alt="profile-pic" src="{{ user.profile.image.url }}" class="kt-rounded-" />
 		</div>
 		<div class="kt-user-card__details">
-			<div class="kt-user-card__name">Full Name</div>
-			<div class="kt-user-card__position">Position</div>
+			<div class="kt-user-card__name">{{ user.first_name }} {{user.last_name}}</div>
+			{% if user|is_manager %}
+				<div class="kt-user-card__position">Manager</div>
+			{% elif user|is_guard %}
+				<div class="kt-user-card__position">Guard</div>
+			{% endif %}
+			
 		</div>
 	</div>
 </div>
@@ -19,6 +26,7 @@
 			<span class="kt-nav__link-text">My Profile</span>
 		</a>
 	</li>
+	<!-- for future fyp students :)
 	<li class="kt-nav__item">
 		<a href="custom/profile/overview-1.html" class="kt-nav__link">
 			<span class="kt-nav__link-icon"><i class="flaticon2-browser-2"></i></span>
@@ -37,10 +45,10 @@
 			<span class="kt-nav__link-text">Settings</span>
 		</a>
 	</li>
-	
+	goodluck -->
 	<li class="kt-nav__separator kt-nav__separator--fit"></li>
-	<li class="kt-nav__custom kt-space-between">
+	<li class="ml-4 kt-nav__custom kt-space-between">
 		<a href="{% url 'logout' %}" class="btn btn-label-brand btn-upper btn-sm btn-bold">Sign Out</a>
-		<i class="flaticon2-information kt-label-font-color-2" data-toggle="kt-tooltip" data-placement="right" title="" data-original-title="Click to learn more..."></i>
+		<!-- <i class="ml-2 flaticon2-information kt-label-font-color-2" data-toggle="kt-tooltip" data-placement="right" title="" data-original-title="Click to learn more..."></i> -->
 	</li>
 </ul>

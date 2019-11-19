@@ -1,0 +1,34 @@
+<div class="kt-portlet__body">
+    <button type="button" class="btn btn-primary btn-lg" id="clock">Clock In</button>
+</div>
+<script>
+$(document).ready( function() {
+    function init_btn(response) {
+        if (response.active==true) {
+            console.log('active entry detected')
+            $('#clock').addClass('btn-danger')
+            $('#clock').text('Clock Out')
+        } else {
+            $('#clock').removeClass('btn-danger')
+            $('#clock').text('Clock In')
+        }
+    }
+    $.ajax({
+        url: "{% url 'check-active' %}",
+        success: function(response) {
+            init_btn(response)
+        }
+    })
+
+    $(document).on('click', '#clock', function() {
+        console.log('toggle')
+        $.ajax({
+            url: "{% url 'clock-toggle'%}",
+            success: function(response) {
+                init_btn(response)
+            }  
+        })
+    })
+})
+    
+</script>

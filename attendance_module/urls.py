@@ -3,6 +3,8 @@ from . import views
 
 urlpatterns = [
     path('', views.dashboard, name='attd-dash'),
+    path('activecheck/', views.check_active, name='check-active'),
+    path('clock-in-out/', views.clock_toggle, name='clock-toggle'),
     path('apply-leave/', views.new_leave_request, name='attd-leave-request'),
     path('review-leave/', views.LeaveReview.as_view(template_name='attendance_module/leave-review.html'), name='attd-leave-review'),
     path('review-leave/details/', views.get_leave_details, name='get-leave-details'),

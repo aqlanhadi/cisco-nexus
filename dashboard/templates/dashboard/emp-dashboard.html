@@ -1,16 +1,15 @@
 {% block employee %}
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 <div class='row'>
     <div class='col-4'>
         <div class='kt-portlet'>
-            <div class='kt-portlet__body'>
-                <p>Quick Links</p>
-            </div>
+            {% include 'attendance_module/clocked.html' %}
         </div>
     </div>
     <div class='col-8'>
         <div class='kt-portlet'>
             <div class='kt-portlet__body'>
-                <p>Graphs and shit</p>
+                <p>Payroll Graph</p>
             </div>
         </div>
     </div>
