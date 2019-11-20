@@ -18,6 +18,7 @@ from .serializers import ShiftSerializer
 from users.decorators import group_required, is_guard, is_manager
 from payroll_module.models import Salary
 from calendar import HTMLCalendar, monthrange
+from users.decorators import is_guard, is_manager, decorator_user
 # Create your views here.
 
 PAY_PER_MIN = 0.06
@@ -27,15 +28,19 @@ current_guard = 0
 tz = pytz.timezone('Asia/Kuala_Lumpur')
 timezone.activate(tz)
 
+@is_guard
 def upload(file):
     fs = FileSystemStorage()
     name = fs.save(file.name, file)
     uploaded_to = fs.url(name)
     print("file uploaded to " + uploaded_to)
 
+@is_manager
+@is_guard
 def dashboard(request):
     return render(request, 'attendance_module/dashboard.html')
 
+@is_guard
 def new_leave_request(request):
     if request.method == "POST":
         user = request.user
@@ -69,6 +74,7 @@ def new_leave_request(request):
 def leave_review(request):
     return render(request, 'attendance_module/leave-review.html')
 
+@is_manager
 def approve(request):
     id = request.GET['id']
     leave = Leave.objects.get(id=id)
@@ -81,6 +87,7 @@ def approve(request):
     }
     return JsonResponse(response)
 
+@is_manager
 def reject(request):
     id  = request.GET['id']
     leave = Leave.objects.get(id=id)
@@ -107,6 +114,7 @@ class LeaveDatatable(Datatable):
     def get_date(self, instance, **kwargs):
         return datetime.strftime(instance.start_datetime, "%A, %d %B %Y")
 
+@decorator_user(is_manager)
 class LeaveReview(DatatableView):
     model = Leave
     datatable_class = LeaveDatatable
@@ -114,6 +122,7 @@ class LeaveReview(DatatableView):
     def get_queryset(self):
         return Leave.objects.filter(user__location__manager__username=self.request.user.username)
 
+@is_manager
 def get_leave_details(request):
     id = request.GET['leave_id']
     leave = Leave.objects.get(id=id)
@@ -147,6 +156,7 @@ def calculate_salary(mins):
     pay = int(mins) * PAY_PER_MIN if mins is not None else 0
     return round(pay, 2)
 
+@is_manager
 def get_shift(request):
     g_id = request.GET['p_id']
     guard = User.objects.get(id=g_id)
@@ -186,6 +196,7 @@ def get_shift(request):
     
     return JsonResponse(response)
 
+@is_manager
 def get_details(request):
     date = request.GET['date']
     guard_id = request.GET['g_id']
@@ -212,6 +223,7 @@ def get_details(request):
 
     return JsonResponse(response)
 
+@is_manager
 def verify_shift(request):
     date = request.GET['date']
     guard_id = request.GET['g_id']
@@ -227,6 +239,7 @@ def verify_shift(request):
     }
     return JsonResponse(response)
 
+@is_manager
 def save_salary(request):
     guard_id = request.GET['g_id']
     guard = Guard.objects.get(user__id=guard_id)
@@ -243,6 +256,7 @@ def save_salary(request):
 
     return JsonResponse(response)
 
+@is_guard
 def check_active(request):
     active = Entry.objects.filter(user__user__id=request.user.id, end_datetime__isnull=True)
     print(active.first().active)
@@ -251,7 +265,7 @@ def check_active(request):
     else:
         return JsonResponse({'active':False})
 
-
+@is_guard
 def clock_toggle(request):
     active = Entry.objects.filter(user__user__id=request.user.id, end_datetime__isnull=True)
     if active.count() != 0:
@@ -275,6 +289,7 @@ class GuardDatatable(Datatable):
     class Meta:
         columns = ['id','first_name']
 
+@decorator_user(is_manager)
 class RegisterAttendance(DatatableView):
     model = User
     datatable_class = GuardDatatable

@@ -155,6 +155,7 @@ Register Attendance
         var guard_id = 0;
         function row_clickable() {
             $(document).on('click', '#DataTables_Table_0 tbody tr', function() {
+                $('#submit_alert').hide()
                 id = $(this).attr('id');
                 console.log('clicked on row -> id ' + id)
                 $.ajax({

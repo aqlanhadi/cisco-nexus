@@ -3,6 +3,21 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import user_passes_test
 from functools import wraps
 from django.http import HttpResponseForbidden, HttpResponseRedirect
+from django.utils.decorators import method_decorator
+
+def decorator_user(function_decorator):
+    """Convert a function based decorator into a class based decorator usable
+    on class based Views.
+
+    Can't subclass the `View` as it breaks inheritance (super in particular),
+    so we monkey-patch instead.
+    """
+
+    def simple_decorator(View):
+        View.dispatch = method_decorator(function_decorator)(View.dispatch)
+        return View
+
+    return simple_decorator
 
 def group_required(group, login_url=None, raise_exception=False):
     """
@@ -26,8 +41,6 @@ def group_required(group, login_url=None, raise_exception=False):
         # As the last resort, show the login form
         return False
     return user_passes_test(check_perms, login_url=login_url)
-
-
 
 def is_guard(function):
     @wraps(function)

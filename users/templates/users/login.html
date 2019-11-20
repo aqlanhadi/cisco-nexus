@@ -3,6 +3,9 @@
 {% block content %}
     <!--begin::Form-->
     <form class="kt-login-v2__form kt-form" action="" autocomplete="off" method="POST">
+        {% if form.errors %}    
+            <div class="alert alert-danger" role='alert'>Incorrect username or password.</div>
+        {% endif %}
         {% csrf_token %}
         <div class="form-group">
             <input class="form-control" type="text" placeholder="Username" name="username" autofocus required id="id_username" autocomplete="off">
