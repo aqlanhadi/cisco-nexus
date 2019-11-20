@@ -1,5 +1,8 @@
 {% extends 'nexus/layout.html' %}
 {% load static %}
+{% block title %}
+Register Attendance
+{% endblock title %}
 {% load fullcalendar_tags %}
 {% load table_tags %}
 {% block breadcrumbs %}
@@ -16,6 +19,7 @@
 {% endblock breadcrumbs %}
 {% block content %}
 <script>
+    var globalGuard;
     $(function() {
         var csrftoken = Cookies.get('csrftoken');
         function csrfSafeMethod(method) {
@@ -148,7 +152,7 @@
             $('#guard-details').show()
             $('#review-area').show()
         }
-
+        var guard_id = 0;
         function row_clickable() {
             $(document).on('click', '#DataTables_Table_0 tbody tr', function() {
                 id = $(this).attr('id');
@@ -162,12 +166,14 @@
                         console.log("dt clicked ajax called")
                         fetch_events(response);
                         guard_id = response.g_id;
+                        globalGuard = guard_id;
                     }
                 });
             });
             
         }
-        var guard_id = 0;
+
+
         var dtopt = {
             "searching": false,
             "paging": false,
@@ -185,16 +191,30 @@
             $(table.row(table.row('tr.active').index()+1).node()).click();
         }
         
-        $(document).on('click', '#submit-salary', function() {
-            console.log("submitting...")
-        });
         
         var eventLoaded = false;
-
         
     }); 
+
+    function salaryButton(){
+            console.log("submitting...");
+            $.ajax({
+                url: "{% url 'attd-submit' %}",
+                data: {'g_id': globalGuard },
+                success: function(response) {
+                    console.log(response.success)
+                    console.log('submitted')
+                    $('#submit_alert').show()
+                }  
+            })
+        }
 </script>
 <div class="kt-content kt-grid__item kt-grid__item--fluid" id="kt_content">
+    <div class='row'>
+        <div class='col'>
+            <div class="alert alert-success" style="display:none;" role="alert" id="submit_alert">Salary recorded!</div> 
+        </div>
+    </div>
     <div class='row'>
         <div class='col'>
             <div class='kt-portlet' id='guard-details' style='display:none;'>
@@ -223,7 +243,7 @@
                 <div class='kt-portlet__foot' id='details-footer'>
                     <div class='row d-flex flex-row-reverse'>
                         <!-- <button type='button' class='ml-3 mr-2 btn btn-primary btn-pill' id='next-guard'>Next</button> -->
-                        <button type='button' class='btn btn-secondary btn-pill' id='submit-salary'>Submit Verified Salary</button>
+                        <button type='button' class='btn btn-secondary btn-pill' id='submit-salary' onclick="salaryButton()">Submit Verified Salary</button>
                     </div>
                 </div>
             </div>

@@ -1,4 +1,7 @@
 {% extends 'nexus/layout.html' %}
+{% block title %}
+Dashboard
+{% endblock title %}    
 {% block breadcrumbs %}
     <span class="kt-subheader__separator kt-hidden"></span>
     <div class="kt-subheader__breadcrumbs">
@@ -15,7 +18,7 @@
             {% include 'dashboard/man-dashboard.html' %}
         {% endblock manager %}
     {% endif %}
-    {% if is_guard %}
+    {% if is_guard is True %}
         {% block employee %}
             {% include 'dashboard/emp-dashboard.html' %} 
         {% endblock employee %} 
