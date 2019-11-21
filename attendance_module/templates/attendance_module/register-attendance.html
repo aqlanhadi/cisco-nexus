@@ -198,17 +198,17 @@ Register Attendance
     }); 
 
     function salaryButton(){
-            console.log("submitting...");
-            $.ajax({
-                url: "{% url 'attd-submit' %}",
-                data: {'g_id': globalGuard },
-                success: function(response) {
-                    console.log(response.success)
-                    console.log('submitted')
-                    $('#submit_alert').show()
-                }  
-            })
-        }
+        console.log("submitting...");
+        $.ajax({
+            url: "{% url 'attd-submit' %}",
+            data: {'g_id': globalGuard },
+            success: function(response) {
+                console.log(response.success)
+                console.log('submitted')
+                $('#submit_alert').show()
+            }  
+        })
+    }
 </script>
 <div class="kt-content kt-grid__item kt-grid__item--fluid" id="kt_content">
     <div class='row'>
