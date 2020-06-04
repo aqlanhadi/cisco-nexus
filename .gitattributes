@@ -1,2 +1,2 @@
-static/admin/css/* linguist-vendored
-staticfiles/admin/css/* linguist-vendored
+static/* linguist-vendored
+staticfiles/* linguist-vendored
