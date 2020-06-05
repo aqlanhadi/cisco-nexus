@@ -1,90 +1,165 @@
 {% extends 'nexus/layout.html' %}
+{% load static %}
+{% block breadcrumbs %}
+    <span class="kt-subheader__separator kt-hidden"></span>
+    <div class="kt-subheader__breadcrumbs">
+        <a href="{% url 'dashboard' %}" class="kt-subheader__breadcrumbs-home"><i class="flaticon2-shelter"></i></a>
+        <span class="kt-subheader__breadcrumbs-separator"></span>
+        <a href="" class="kt-subheader__breadcrumbs-link">
+            Attendances </a>
+        <span class="kt-subheader__breadcrumbs-separator"></span>
+        <a href="" class="kt-subheader__breadcrumbs-link">
+            Leave Request Review </a>
+    </div>
+{% endblock breadcrumbs %}
 {% block content %}
-<p>leave-review</p>
+<script>
+    $(function() {
+        var csrftoken = Cookies.get('csrftoken');
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
 
+        function fetch_data(response) {
+            $('#guard-id__placeholder').text("ID#: " + response.id);
+            $('#guard-name__placeholder').text(response.name);
+            $('#guard-location').text(response.location);
+            $('#guard-pic').attr('src', response.img);
+            $('#reason').text(response.reason)
+            if (response.doc_url != "NA") {
+                $('#doc_placeholder').attr('src', response.doc_url)
+            } 
+            var status_btn = $('#status-icon')
+            if (response.status == 'P') {
+                status_btn.removeClass('btn-danger btn-success')
+                status_btn.addClass('btn-warning')
+                status_btn.text("Pending")
+            } else if (response.status == 'A') {
+                status_btn.removeClass('btn-danger btn-warning')
+                status_btn.addClass('btn-success')
+                status_btn.text("Approved")
+            } else {
+                status_btn.removeClass('btn-warning btn-success')
+                status_btn.addClass('btn-danger')
+                status_btn.text("Declined")
+            }
+        }
+
+        var dtopt = {
+            "searching": false,
+            "paging": false,
+            "info": false,
+            "initComplete": function() {
+                $(document).on('click', '#DataTables_Table_0 tbody tr', function() {
+                    id = $(this).attr('id');
+                    $.ajax({
+                        url: "{% url 'get-leave-details' %}",
+                        data: {'leave_id': id},
+                        success: function(response) {
+                            console.log("hi")
+                            fetch_data(response)
+                            $('#review-area').show()
+                            $('#g-det-area').show()
+                            $('#approve').on('click', function() {
+                                $.ajax({
+                                    url: "{% url 'attd-approve' %}",
+                                    data: {'id':id},
+                                    success: function(response) {
+                                        console.log(response.status)
+                                    }
+                                })
+                            })
+                            $('#reject').on('click', function(){
+                                $.ajax({
+                                    url: "{% url 'attd-reject' %}",
+                                    data: {'id':id},
+                                    success: function(response) {
+                                        console.log()
+                                    }
+                                })
+                            })
+                        }
+                    });
+                });
+            }
+        };
+        var dt = datatableview.initialize($('.datatable'), dtopt);
+        $('.datatable').addClass("ui celled table")
+        // $('.datatable').addClass("celled")
+        // $('.datatable').addClass("table")
+        var table = dt.api;
+    });
+</script>
 <div class="kt-content kt-grid__item kt-grid__item--fluid" id="kt_content">
-        <div class="row">
-            <div class="col-lg-5">
-                <!--begin::Portlet-->
-                <div class="kt-portlet">
-                    <div class="kt-portlet__head">
-                        <div class="kt-portlet__head-label">
-                            <h3 class="kt-portlet__head-title">
-                                Requests
-                            </h3>
-                        </div>
-                    </div>
-                    <div class="kt-portlet__body">
-                        <div class="kt-portlet__content">
-                                <div class="kt-section">
-                                        <div class="kt-section__content">
-                                            <table class="table">
-                                                <thead class="thead-light">
-                                                    <tr>
-                                                        <th>#</th>
-                                                        <th>Name</th>
-                                                        <th>Requested for</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                    <th scope="row">1</th>
-                                                    <td><a href="../../components/icons/fontawesome5.html" class="kt-menu__link ">Jhon</a></td>
-                                                    <td>2 Sept</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row">2</th>
-                                                        <td><a href="../../components/icons/fontawesome5.html" class="kt-menu__link ">Lisa</a></td>
-                                                        <td>3 Oct</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row">3</th>
-                                                        <td><a href="../../components/icons/fontawesome5.html" class="kt-menu__link ">Lim</a></td>
-                                                        <td>17 Nov</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                        </div>
-                    </div>
+    <div class='row'>
+        <div class='col'>
+            <div class='kt-portlet'>
+                <div class='kt-portlet__body'>
+                    {{ datatable }}
                 </div>
-                <!--end::Portlet-->
-                
             </div>
-            <div class="col-lg-7">
-                <!--begin::Portlet-->
-                <div class="kt-portlet">
-                    <div class="kt-portlet__head">
-                        <div class="kt-portlet__head-label">
-                            <h3 class="kt-portlet__head-title">
-                                Leave request
-                            </h3>
-                        </div>
-                    </div>
-                    <div class="kt-portlet__body">
-                        <div class="kt-portlet__content">
-                            Name, date
-                        </div>
-                        <div class="kt-portlet__content">
-                            Reason: 
-                        </div>
-                        <div class="kt-portlet__content">
-                                On that day
-                                    active guards
-                                No pending security issues
-                            </div>
-                    </div>
-                    <div class="kt-portlet__foot kt-portlet__foot--md">
-                            <div class="kt-widget-17__foot">
-                                <div class="kt-widget-17__foot-info"></div>
-                                <div class="kt-widget-17__foot-toolbar"> <a href="#" class="btn btn-default btn-sm btn-bold btn-upper">Approve</a> <a href="#" class="btn btn-brand btn-sm btn-upper btn-bold">Reject</a> </div>
+        </div>
+        <div class='col'>
+            <div class='kt-portlet' style='display:none;' id='g-det-area'>
+                <div class='kt-portlet__body'>
+                    <div class='row'>
+                        <div class='col-sm-2'>
+                            <div class="kt-profile__main-pic">
+                            <!-- change pic later -->
+                            <img src="" alt="" id='guard-pic' style='border-radius:50%; max-width:100%; max-height:100%'/>
                             </div>
                         </div>
+                        <div class='col-sm-6'>
+                            <div class='row'>
+                                <h6 class="col-sm text-left font-weight-light" id='guard-id__placeholder'></h6>
+                            </div>
+                            <div class='row'>
+                                <h3 class="col-sm text-left font-weight-light" id='guard-name__placeholder'></h3>
+                            </div>
+                            <div class='row'>
+                                <h6 class="col-sm text-left font-weight-light" id='guard-location'></h6>
+                            </div>
+                        </div>
+                        <div class='col-sm-2 text-right'>
+                                <p id="status-icon" class="btn btn-pill"></p>
+                        </div>
+                    </div>
                 </div>
-                <!--end::Portlet-->
+            </div>
+            <div class='kt-portlet' style='display:none;' id='review-area'>
+                <div class='kt-portlet__body'>
+                    <div class='container'>
+                        <div class="mt-4 row">
+                            <h6 class="col-sm-2 text-right text-uppercase">
+                            Given Reason
+                            </h6><h5 class="col-sm-8 text-left" id='reason'>
+                            </h5>
+                            <div class="w-100"></div>
+                            <h6 class="col-sm-2 text-right text-uppercase">
+                            Supporting Documents
+                            </h6>
+                            <h5 class="col-sm-8 text-left" id='u_pay'>
+                                <embed id='doc_placeholder' style='width:100%; height:300px;'></embed>
+                            </h5>                
+                        </div>
+                    </div>
+                </div>
+                <div class='kt-portlet__foot' style='' id='review-footer'>
+                    <div class='row d-flex flex-row-reverse'>
+                        <button type='button' class='ml-3 mr-2 btn btn-primary btn-pill' id='approve'>Approve</button>
+                        <button type='button' class='btn btn-danger btn-pill' id='reject'>Reject</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
+</div>
 {% endblock content %}

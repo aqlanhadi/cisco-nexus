@@ -1,5 +1,17 @@
 {% extends 'nexus/layout.html' %}
 {% load table_tags %}
+{% block breadcrumbs %}
+    <span class="kt-subheader__separator kt-hidden"></span>
+    <div class="kt-subheader__breadcrumbs">
+        <a href="{% url 'dashboard' %}" class="kt-subheader__breadcrumbs-home"><i class="flaticon2-shelter"></i></a>
+        <span class="kt-subheader__breadcrumbs-separator"></span>
+        <a href="" class="kt-subheader__breadcrumbs-link">
+            Payroll </a>
+        <span class="kt-subheader__breadcrumbs-separator"></span>
+        <a href="" class="kt-subheader__breadcrumbs-link">
+            Manage Salary </a>
+    </div>
+{% endblock breadcrumbs %}
 {% block content %}
 <div class="kt-content kt-grid__item kt-grid__item--fluid" id="kt_content">
     <div class="alert alert-light alert-elevate" role="alert">

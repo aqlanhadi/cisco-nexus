@@ -30,7 +30,11 @@ License: You must have a valid license purchased only from https://themes.getboo
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700">
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 		<!--end::Fonts -->
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.css" rel="stylesheet">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/css/bootstrap-timepicker.css" rel="stylesheet">
 
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.css" rel="stylesheet">
+		<link href="https://cdn.datatables.net/1.10.20/css/dataTables.semanticui.min.css" rel="stylesheet">
 		<!--begin::Page Vendors Styles(used by this page) -->
 		<link href="{% static 'nexus/vendors/custom/fullcalendar/fullcalendar.bundle.css' %}" rel="stylesheet" type="text/css" />
 		<link href="{% static 'nexus/app/custom/calendar/custom-calendar.css' %}" rel="stylesheet" type="text/css" />
@@ -116,6 +120,9 @@ License: You must have a valid license purchased only from https://themes.getboo
 		<script src="{% static 'nexus/vendors/base/vendors.bundle.js'%}" type="text/javascript"></script>
 		<script src="{% static 'nexus/demo/default/base/scripts.bundle.js' %}" type="text/javascript"></script>
 
+		<script src="{% static 'nexus/app/custom/general/components/forms/widgets/bootstrap-datepicker.js' %}" type="text/javascript"></script>
+		<script src="{% static 'nexus/app/custom/general/components/forms/widgets/bootstrap-timepicker.js' %}" type="text/javascript"></script>
+		<script src="{% static 'nexus/app/custom/general/components/forms/widgets/dropzone.js' %}" type="text/javascript"></script>
 		<!--end::Global Theme Bundle -->
 
 		<!-- Bootstrap Required JS-->
@@ -126,9 +133,9 @@ License: You must have a valid license purchased only from https://themes.getboo
 		<!--<script src="{% static 'nexus/vendors/custom/fullcalendar/fullcalendar.bundle.js' %}" type="text/javascript"></script>-->
 
 		<!--end::Page Vendors -->
-
+		 {% endcomment %}
 		<!--begin::Page Scripts(used by this page) -->
-		<script src="{% static 'nexus/js/pages/dashboard.js' %}" type="text/javascript"></script> {% endcomment %}
+		<script src="{% static 'nexus/js/pages/dashboard.js' %}" type="text/javascript"></script>
 		<script src="{% static 'nexus/app/custom/general/components/keen-wizard/wizard-demo-v2.js'%}" type="text/javascript"></script>
 		<script src="{% static 'nexus/app/custom/general/components/forms/widgets/bootstrap-daterangepicker.js' %}" type="text/javascript"></script>
 		<script src="{% static 'nexus/vendors/custom/fullcalendar/fullcalendar.bundle.js'%}" type="text/javascript"></script>
