@@ -10,7 +10,7 @@ django-filter==2.2.0
 -e git+https://github.com/rodrigoamaral/django-fullcalendar.git@d116fcfc2093e57035932a9ea7c111d449fd7e4d#egg=django_fullcalendar
 django-heroku==0.3.1
 django-sass==0.2.0
-djangorestframework==3.10.3
+djangorestframework==3.11.2
 gunicorn==19.9.0
 libsass==0.19.2
 Markdown==3.1.1
